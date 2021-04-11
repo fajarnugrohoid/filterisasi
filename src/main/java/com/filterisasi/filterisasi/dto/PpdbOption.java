@@ -1,5 +1,6 @@
 package com.filterisasi.filterisasi.dto;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PpdbOption {
 
     @Id
-    private String _id;
+    private ObjectId _id;
     private String name;
     private String type;
 
@@ -26,12 +27,9 @@ public class PpdbOption {
     private String school_id;
 
     @org.springframework.lang.Nullable
-    private Ppdb ppdb;
-
-    @org.springframework.lang.Nullable
     private PpdbSchool ppdb_schools;
 
-    public PpdbOption(String _id, String name, String type, int rombel, int quota, Integer quota_foreigner, int total_quota, String school_id, Ppdb ppdb, PpdbSchool ppdb_schools) {
+    public PpdbOption(ObjectId _id, String name, String type, int rombel, int quota, Integer quota_foreigner, int total_quota, String school_id, PpdbSchool ppdb_schools) {
         this._id = _id;
         this.name = name;
         this.type = type;
@@ -40,15 +38,14 @@ public class PpdbOption {
         this.quota_foreigner = quota_foreigner;
         this.total_quota = total_quota;
         this.school_id = school_id;
-        this.ppdb = ppdb;
         this.ppdb_schools = ppdb_schools;
     }
 
-    public String get_id() {
+    public ObjectId get_id() {
         return _id;
     }
 
-    public void set_id(String _id) {
+    public void set_id(ObjectId _id) {
         this._id = _id;
     }
 
@@ -106,14 +103,6 @@ public class PpdbOption {
 
     public void setSchool_id(String school_id) {
         this.school_id = school_id;
-    }
-
-    public Ppdb getPpdb() {
-        return ppdb;
-    }
-
-    public void setPpdb(Ppdb ppdb) {
-        this.ppdb = ppdb;
     }
 
     public PpdbSchool getPpdb_schools() {

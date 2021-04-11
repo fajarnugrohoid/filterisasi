@@ -28,7 +28,8 @@ public class MyRunner implements CommandLineRunner {
         List<PpdbOption> ppdbOptions = ppdbOptionLookupSchoolRepository.lookupPpdbOptionPpdbSchool();
         System.out.println("ppdbOptions:" + ppdbOptions.size());
         for (int i = 0; i <ppdbOptions.size() ; i++) {
-            System.out.println("ppdbSchools:" + i + "-" + ppdbOptions.get(i).getName());
+            System.out.println("ppdbSchools:" + i + "-" + ppdbOptions.get(i).get_id()  + " - " + ppdbOptions.get(i).getName() +  " - " + ppdbOptions.get(i).getPpdb_schools().get_Id() + " Add: " + ppdbOptions.get(i).getPpdb_schools().getAddress());
+            //System.out.println("ppdbSchools-address:" + i + "-" + ppdbOptions.get(i).getPpdb_schools().getAddress());
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.filterisasi.filterisasi.dto;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PpdbSchool {
 
     @Id
-    private String _id;
+    private ObjectId _id;
     private String type;
     private String level;
     private String code;
@@ -17,7 +18,7 @@ public class PpdbSchool {
     public PpdbSchool() {
     }
 
-    public PpdbSchool(String _id, String type, String level, String code, String name, String address) {
+    public PpdbSchool(ObjectId _id, String type, String level, String code, String name, String address) {
         this._id = _id;
         this.type = type;
         this.level = level;
@@ -26,11 +27,11 @@ public class PpdbSchool {
         this.address = address;
     }
 
-    public String get_Id() {
+    public ObjectId get_Id() {
         return _id;
     }
 
-    public void setId(String _id) {
+    public void setId(ObjectId _id) {
         this._id = _id;
     }
 
