@@ -3,19 +3,23 @@ package com.filterisasi.filterisasi.repository;
 import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbRegistration;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperationContext;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 @Service
@@ -29,41 +33,19 @@ public class PpdbRegistrationRepositoryImpl implements PpdbRegistrationRepositor
         this.mongoTemplate = mongoTemplate;
     }
 
-    @Override
-    public List<PpdbRegistration> getPpdbRegistrations() {
-        System.out.println("lookupPpdbOptionPpdbSchool");
+    private MatchOperation getMatchOperation(float minPrice, float maxPrice) {
+        Criteria priceCriteria = where("price").gt(minPrice).andOperator(where("price").lt(maxPrice));
+        return match(priceCriteria);
+    }
 
-
-
-        Aggregation aggregation = Aggregation.newAggregation(
-                match(new Criteria("type").is("nhun")),
-                new AggregationOperation() {
-                    @Override
-                    public Document toDocument(AggregationOperationContext context) {
-                        return new Document("$lookup",
-                                new Document("from", "ppdb_schools")
-                                        .append("let", new Document("school_id", "$school_id"))
-                                        .append("pipeline", Arrays.asList(
-                                                new Document("$match",
-                                                        new Document("$expr",
-                                                                new Document(
-                                                                        "$eq", Arrays.asList("$_id", "$$school_id")
-                                                                )
-                                                        ))))
-                                        .append("as", "ppdb_schools"));
-                    }
-                },
-                unwind("$ppdb_schools"),
-                sort(Direction.DESC, "createdAt"),
-                project().andExclude("_class")
+    public List<PpdbRegistration> getByFirstChoice() {
+        System.out.println("getPpdbRegistrations");
+        Query query = new Query();
+        query.addCriteria(Criteria.where("jenjang_pendaftaran").is("senior")
+                //.andOperator(Criteria.where("age").lt(upperBound))
         );
+        return mongoTemplate.find(query, PpdbRegistration.class);
 
-        System.out.println("Aggregation: " + aggregation.toString());
-
-        List<PpdbRegistration> results = mongoTemplate.aggregate(aggregation, mongoTemplate.getCollectionName(PpdbRegistration.class), PpdbRegistration.class).getMappedResults();
-
-        System.out.println("results:" + results.size());
-        return results;
     }
 
 }
