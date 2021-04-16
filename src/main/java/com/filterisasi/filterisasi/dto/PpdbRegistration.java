@@ -35,10 +35,25 @@ public class PpdbRegistration {
     private ObjectId swastaChoiceSchool;
     private Integer statusSeleksi;
 
+    @Field("score_jarak_1")
+    private Double skorJarak1 = 0.0;
+
+    @Field("skor_peserta")
+    private Double skorPeserta = 0.0;
+
+
     public PpdbRegistration() {
     }
 
-    public PpdbRegistration(ObjectId _id, String jenjangPendaftaran, String caraPendaftaran, String levelPendaftaran, ObjectId firstChoice, String scoreJarak1, ObjectId secondChoice, String scoreJarak2, String swastaChoice, String age, String un, String name, String npsn, boolean approved, String codeSchool, String schoolLevel, String codeType, ObjectId firstChoiceSchool, ObjectId secondChoiceSchool, ObjectId swastaChoiceSchool, Integer statusSeleksi) {
+    public PpdbRegistration(ObjectId _id, String jenjangPendaftaran, String caraPendaftaran,
+                            String levelPendaftaran, ObjectId firstChoice, String scoreJarak1,
+                            ObjectId secondChoice, String scoreJarak2, String swastaChoice,
+                            String age, String un, String name, String npsn, boolean approved,
+                            String codeSchool, String schoolLevel, String codeType,
+                            ObjectId firstChoiceSchool, ObjectId secondChoiceSchool,
+                            ObjectId swastaChoiceSchool, Integer statusSeleksi,
+                            Double skorJarak1, Double skorPeserta
+    ) {
         this._id = _id;
         this.jenjangPendaftaran = jenjangPendaftaran;
         this.caraPendaftaran = caraPendaftaran;
@@ -60,6 +75,8 @@ public class PpdbRegistration {
         this.secondChoiceSchool = secondChoiceSchool;
         this.swastaChoiceSchool = swastaChoiceSchool;
         this.statusSeleksi = statusSeleksi;
+        this.skorJarak1 = skorJarak1;
+        this.skorPeserta = skorPeserta;
     }
 
     public ObjectId get_id() {
@@ -228,5 +245,21 @@ public class PpdbRegistration {
 
     public void setStatusSeleksi(Integer statusSeleksi) {
         this.statusSeleksi = statusSeleksi;
+    }
+
+    public Double getSkorJarak1() {
+        return skorJarak1;
+    }
+
+    public void setSkorJarak1(Double skorJarak1) {
+        this.skorJarak1 = skorJarak1;
+    }
+
+    public Double getSkorPeserta() {
+        return skorPeserta;
+    }
+
+    public void setSkorPeserta(Double skorPeserta) {
+        this.skorPeserta = skorPeserta;
     }
 }

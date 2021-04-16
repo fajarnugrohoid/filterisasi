@@ -3,6 +3,7 @@ package com.filterisasi.filterisasi.repository;
 import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbSchool;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,10 +36,18 @@ public class PpdbOptionLookupSchoolRepositoryImpl implements PpdbOptionLookupSch
     public List<PpdbOption> lookupPpdbOptionPpdbSchool() {
         System.out.println("lookupPpdbOptionPpdbSchool");
 
-
+        String a[]
+                = new String[] {
+                            "SMA NEGERI 1 BANJARAN - PRESTASI NILAI RAPOR",
+                            "SMA NEGERI 1 BALEENDAH - PRESTASI NILAI RAPOR"
+        };
 
         Aggregation aggregation = Aggregation.newAggregation(
-                match(new Criteria("type").is("nhun")),
+                match(
+                       new Criteria("type").is("nhun").
+                               andOperator(new Criteria("name").in(Arrays.asList(a)))
+
+                ),
                 //lookup("users", "postedBy", "_id", "user")
                 new AggregationOperation() {
                     @Override
