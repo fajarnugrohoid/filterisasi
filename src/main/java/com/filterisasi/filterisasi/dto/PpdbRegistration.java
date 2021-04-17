@@ -16,10 +16,18 @@ public class PpdbRegistration {
 
     @Field("cara_pendaftaran")
     private String caraPendaftaran;
+
+    @Field("level_pendaftaran")
     private String levelPendaftaran;
+
+    @Field("first_choice")
     private ObjectId firstChoice;
-    private String scoreJarak1;
+
+    @Field("second_choice")
     private ObjectId secondChoice;
+
+    private String scoreJarak1;
+
     private String scoreJarak2;
     private String swastaChoice;
     private String age;
@@ -41,6 +49,8 @@ public class PpdbRegistration {
     @Field("skor_peserta")
     private Double skorPeserta = 0.0;
 
+    private Integer choiceIteration = 0; //status saat ini diterima disekolah mana
+
 
     public PpdbRegistration() {
     }
@@ -52,7 +62,8 @@ public class PpdbRegistration {
                             String codeSchool, String schoolLevel, String codeType,
                             ObjectId firstChoiceSchool, ObjectId secondChoiceSchool,
                             ObjectId swastaChoiceSchool, Integer statusSeleksi,
-                            Double skorJarak1, Double skorPeserta
+                            Double skorJarak1, Double skorPeserta,
+                            Integer choiceIteration
     ) {
         this._id = _id;
         this.jenjangPendaftaran = jenjangPendaftaran;
@@ -77,6 +88,7 @@ public class PpdbRegistration {
         this.statusSeleksi = statusSeleksi;
         this.skorJarak1 = skorJarak1;
         this.skorPeserta = skorPeserta;
+        this.choiceIteration = choiceIteration;
     }
 
     public ObjectId get_id() {
@@ -261,5 +273,13 @@ public class PpdbRegistration {
 
     public void setSkorPeserta(Double skorPeserta) {
         this.skorPeserta = skorPeserta;
+    }
+
+    public Integer getChoiceIteration() {
+        return choiceIteration;
+    }
+
+    public void setChoiceIteration(Integer choiceIteration) {
+        this.choiceIteration = choiceIteration;
     }
 }

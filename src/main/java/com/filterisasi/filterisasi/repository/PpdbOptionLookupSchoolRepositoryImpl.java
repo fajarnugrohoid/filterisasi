@@ -38,13 +38,14 @@ public class PpdbOptionLookupSchoolRepositoryImpl implements PpdbOptionLookupSch
 
         String a[]
                 = new String[] {
-                            "SMA NEGERI 1 BANJARAN - PRESTASI NILAI RAPOR",
-                            "SMA NEGERI 1 BALEENDAH - PRESTASI NILAI RAPOR"
+                            "SMK NEGERI 4 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PRESTASI NILAI RAPOR UNGGULAN",
+                            "SMK NEGERI 2 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PRESTASI NILAI RAPOR UNGGULAN",
+                "SMK NEGERI 2 BANDUNG - TEKNIK MESIN - PRESTASI NILAI RAPOR UNGGULAN"
         };
 
         Aggregation aggregation = Aggregation.newAggregation(
                 match(
-                       new Criteria("type").is("nhun").
+                       new Criteria("type").is("nhun-unggulan").
                                andOperator(new Criteria("name").in(Arrays.asList(a)))
 
                 ),

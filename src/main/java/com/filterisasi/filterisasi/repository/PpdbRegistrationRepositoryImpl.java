@@ -5,6 +5,7 @@ import com.filterisasi.filterisasi.dto.PpdbRegistration;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -38,12 +39,18 @@ public class PpdbRegistrationRepositoryImpl implements PpdbRegistrationRepositor
         return match(priceCriteria);
     }
 
-    public List<PpdbRegistration> getByFirstChoice() {
+    public List<PpdbRegistration> getByFirstChoice(ObjectId firstChoice) {
         System.out.println("getPpdbRegistrations");
         Query query = new Query();
-        query.addCriteria(Criteria.where("jenjang_pendaftaran").is("senior")
-                //.andOperator(Criteria.where("age").lt(upperBound))
+        query.addCriteria(Criteria.where("jenjang_pendaftaran").is("vocational")
+                .andOperator(Criteria.where("first_choice").is(firstChoice))
+                //.andOperator(Criteria.where("first_choice").lt(upperBound))
+        ).with(
+                Sort.by(Sort.Direction.DESC, "skor_peserta").
+                        and(Sort.by(Sort.Direction.ASC, "score_jarak_1"))
+
         );
+
         return mongoTemplate.find(query, PpdbRegistration.class);
 
     }
