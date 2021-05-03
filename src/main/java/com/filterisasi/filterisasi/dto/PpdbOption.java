@@ -3,6 +3,7 @@ package com.filterisasi.filterisasi.dto;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public class PpdbOption {
     @Id
     private ObjectId _id;
     private String name;
+
+    @Field("type")
     private String type;
 
     @org.springframework.lang.Nullable
@@ -27,7 +30,8 @@ public class PpdbOption {
     @org.springframework.lang.Nullable
     private Integer total_quota = 0;
 
-    private String school_id;
+    @Field("school_id")
+    private ObjectId schoolId;
 
     @org.springframework.lang.Nullable
     private PpdbSchool ppdb_schools = new PpdbSchool();
@@ -36,14 +40,21 @@ public class PpdbOption {
 
     private boolean filtered = true;
 
+    private Integer sisaQuota = 0;
+
+    @Field("major_id")
+    private Integer majorId;
+
+    private boolean checkQuota = false;
+
     public PpdbOption() {
     }
 
     public PpdbOption(ObjectId _id, String name, String type, Integer rombel, Integer quota,
-                      Integer quota_foreigner, Integer total_quota, String school_id,
+                      Integer quota_foreigner, Integer total_quota, ObjectId schoolId,
                       List<PpdbRegistration> ppdbRegistrationList,
                       PpdbSchool ppdb_schools,
-                      boolean filtered
+                      boolean filtered, Integer sisaQuota, Integer majorId, boolean checkQuota
                       ) {
         this._id = _id;
         this.name = name;
@@ -52,10 +63,13 @@ public class PpdbOption {
         this.quota = quota;
         this.quota_foreigner = quota_foreigner;
         this.total_quota = total_quota;
-        this.school_id = school_id;
+        this.schoolId = schoolId;
         this.ppdbRegistrationList = ppdbRegistrationList;
         this.ppdb_schools = ppdb_schools;
         this.filtered = filtered;
+        this.sisaQuota = sisaQuota;
+        this.majorId = majorId;
+        this.checkQuota = checkQuota;
     }
 
 
@@ -111,12 +125,12 @@ public class PpdbOption {
         this.total_quota = total_quota;
     }
 
-    public String getSchool_id() {
-        return school_id;
+    public ObjectId getSchoolId() {
+        return schoolId;
     }
 
-    public void setSchool_id(String school_id) {
-        this.school_id = school_id;
+    public void setSchoolId(ObjectId schoolId) {
+        this.schoolId = schoolId;
     }
 
     public void setQuota_foreigner(@Nullable Integer quota_foreigner) {
@@ -145,5 +159,29 @@ public class PpdbOption {
 
     public void setFiltered(boolean filtered) {
         this.filtered = filtered;
+    }
+
+    public Integer getSisaQuota() {
+        return sisaQuota;
+    }
+
+    public void setSisaQuota(Integer sisaQuota) {
+        this.sisaQuota = sisaQuota;
+    }
+
+    public Integer getMajorId() {
+        return majorId;
+    }
+
+    public void setMajorId(Integer majorId) {
+        this.majorId = majorId;
+    }
+
+    public boolean isCheckQuota() {
+        return checkQuota;
+    }
+
+    public void setCheckQuota(boolean checkQuota) {
+        this.checkQuota = checkQuota;
     }
 }

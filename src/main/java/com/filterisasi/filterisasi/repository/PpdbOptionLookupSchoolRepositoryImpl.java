@@ -38,15 +38,24 @@ public class PpdbOptionLookupSchoolRepositoryImpl implements PpdbOptionLookupSch
 
         String a[]
                 = new String[] {
+                            "SMK NEGERI 4 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PERPINDAHAN",
+                            "SMK NEGERI 4 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - ANAK GURU",
                             "SMK NEGERI 4 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PRESTASI NILAI RAPOR UNGGULAN",
-                            "SMK NEGERI 2 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PRESTASI NILAI RAPOR UNGGULAN",
-                "SMK NEGERI 2 BANDUNG - TEKNIK MESIN - PRESTASI NILAI RAPOR UNGGULAN"
+                            "SMK NEGERI 4 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PRESTASI NILAI RAPOR UMUM",
+                "SMK NEGERI 2 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PERPINDAHAN",
+                "SMK NEGERI 2 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - ANAK GURU",
+                "SMK NEGERI 2 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PRESTASI NILAI RAPOR UNGGULAN",
+                "SMK NEGERI 2 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PRESTASI NILAI RAPOR UMUM"
         };
 
         Aggregation aggregation = Aggregation.newAggregation(
-                match(
+                /*match(
                        new Criteria("type").is("nhun-unggulan").
                                andOperator(new Criteria("name").in(Arrays.asList(a)))
+
+                ), */
+                match(
+                        new Criteria("name").in(Arrays.asList(a))
 
                 ),
                 //lookup("users", "postedBy", "_id", "user")
