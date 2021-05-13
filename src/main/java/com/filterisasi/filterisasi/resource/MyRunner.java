@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class MyRunner implements CommandLineRunner {
@@ -64,7 +66,7 @@ public class MyRunner implements CommandLineRunner {
             List<PpdbRegistration> ppdbRegistrations = ppdbRegistrationRepository.getByFirstChoice(ppdbOptions.get(iOpt).get_id());
 
 
-            List<PpdbRegistration> testPpdbRegistrations = new ArrayList<>();
+            List<PpdbRegistration> ppdbRegistrationList = new ArrayList<>();
             PpdbRegistration ppdbRegistration = new PpdbRegistration();
             for (int std = 0; std <ppdbRegistrations.size() ; std++) {
 
@@ -82,9 +84,10 @@ public class MyRunner implements CommandLineRunner {
                 ppdbRegistration.setFirstChoice(ppdbRegistrations.get(std).getFirstChoice());
                 ppdbRegistration.setSecondChoice(ppdbRegistrations.get(std).getSecondChoice());
                 ppdbRegistration.setChoiceIteration(0); //diterima dipilihan 1
-                testPpdbRegistrations.add(ppdbRegistration);
+                ppdbRegistrationList.add(ppdbRegistration);
             }
-            ppdbOptions.get(iOpt).setPpdbRegistrationList(testPpdbRegistrations);
+            ppdbOptions.get(iOpt).setPpdbRegistrationList(ppdbRegistrationList);
+            ppdbOptions.get(iOpt).setOriRegistrationList(ppdbRegistrationList);
 
             System.out.println("===============================================================================");
         }
@@ -119,18 +122,74 @@ public class MyRunner implements CommandLineRunner {
                         " sts:" + ppdbOptions.get(iOpt).isNeedFilter() + "-qBalance:" + ppdbOptions.get(iOpt).getQuotaBalance());
 
                 List<PpdbRegistration> students = ppdbOptions.get(iOpt).getPpdbRegistrationList();
+                List<PpdbRegistration> oriStudents = ppdbOptions.get(iOpt).getOriRegistrationList();
                 Collections.sort(students, new StudentComparator());
+
+                //cari dulu option index lawannya, kali aja, di jalur lawannya, ada siswa quota, sehingga bisa meminta
+                Integer optTargetIdx = null;
+                if (ppdbOptions.get(iOpt).getType().equalsIgnoreCase("perpindahan")) {
+                    optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), "anak-guru", ppdbOptions);
+
+                } else if (ppdbOptions.get(iOpt).getType().equalsIgnoreCase("anak-guru")) {
+                    optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), "perpindahan", ppdbOptions);
+                }
+
+                if ((ppdbOptions.get(iOpt).getQuotaBalance() < 0) && (ppdbOptions.get(optTargetIdx).getQuotaBalance() > 0 ) ){
+
+                    //search siswa yang sudah terlempar, dengan tracking dari ori registration
+
+                    if (ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size() < ppdbOptions.get(optTargetIdx).getQuota()) {
+                        Integer sisaQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
+                        Integer totalQuotaOptionCur = ppdbOptions.get(iOpt).getQuota() + sisaQuotaTarget;
+                        Integer totalQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - sisaQuotaTarget;
+                        ppdbOptions.get(optTargetIdx).setQuota(totalQuotaTarget);
+                        ppdbOptions.get(iOpt).setQuota(totalQuotaOptionCur);
+
+                        ppdbOptions.get(iOpt).setQuotaBalance(ppdbOptions.get(iOpt).getQuotaBalance()+sisaQuotaTarget);
+                        ppdbOptions.get(optTargetIdx).setQuotaBalance(ppdbOptions.get(optTargetIdx).getQuotaBalance()-sisaQuotaTarget);
+
+                        for (int iOriStd = 0; iOriStd <ppdbOptions.get(iOpt).getOriRegistrationList().size() ; iOriStd++) {
+                            List<ObjectId> oriStdHistories = ppdbOptions.get(iOpt).getOriRegistrationList().get(iOriStd).getOptionHistories();
+                            ObjectId oriStdfirstChoice = ppdbOptions.get(iOpt).getOriRegistrationList().get(iOriStd).getFirstChoice();
+
+
+                                 if (oriStdHistories.size()>0){
+                                   Integer optionIdxLemparan = this.findData.findOptionIdxByChoice(oriStdHistories.get(oriStdHistories.size()-1), ppdbOptions);
+                                   Integer optionIdxFirstChoice = this.findData.findOptionIdxByChoice(oriStdfirstChoice, ppdbOptions);
+
+                                   List<PpdbRegistration> ppdbRegistrationList = ppdbOptions.get(optionIdxLemparan).getPpdbRegistrationList();
+                                     for (int iStdLemparan = 0; iStdLemparan <ppdbRegistrationList.size() ; iStdLemparan++) {
+                                         //cek id siswa sama atau tidak dengan yang di ori siswa
+                                         if (ppdbRegistrationList.get(iStdLemparan).get_id().equals(ppdbOptions.get(iOpt).getOriRegistrationList().get(iOriStd).get_id())){
+
+                                             List<PpdbRegistration> firstChoiceRegistrationList = new ArrayList<>();
+                                             firstChoiceRegistrationList.addAll(ppdbOptions.get(optionIdxFirstChoice).getPpdbRegistrationList());
+                                             firstChoiceRegistrationList.add(ppdbRegistrationList.get(iStdLemparan));
+                                             ppdbOptions.get(optionIdxFirstChoice).setPpdbRegistrationList(firstChoiceRegistrationList);
+
+                                             ppdbRegistrationList.remove(iStdLemparan);
+
+                                             //set yg kekurangin siswanya di filter ulang
+                                             //set yg ditambahin siswanya di filter ulang
+                                             break;
+                                         }
+                                     }
+
+                                 }
+
+
+
+                        }
+
+
+
+                    }
+
+                }
 
                 if (jumlahPendaftar > quotaOption) { //jika pendaftar lebih banyak dari quota, maka potong
 
-                    //cari dulu option index lawannya, kali aja, di jalur lawannya, ada siswa quota, sehingga bisa meminta
-                    Integer optTargetIdx = null;
-                    if (ppdbOptions.get(iOpt).getType().equalsIgnoreCase("perpindahan")) {
-                        optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), "anak-guru", ppdbOptions);
 
-                    } else if (ppdbOptions.get(iOpt).getType().equalsIgnoreCase("anak-guru")) {
-                        optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), "perpindahan", ppdbOptions);
-                    }
 
                     if (ppdbOptions.get(optTargetIdx).isNeedFilter() == false){ //sudah tidak membutuhkan di filter ulang, karena sudah difilter
                         //jika lawannya atau targetnya ada sisa quota, maka
@@ -162,6 +221,31 @@ public class MyRunner implements CommandLineRunner {
                         }
                         ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().add(students.get(iStd)); //tambahkan siswa ke sekolah pilihan selanjutnya
                         ppdbOptions.get(idxTargetOption).setNeedFilter(true); //rubah status needFilter=true,karena sekolah tsb dapat limpahan siswa, jadi perlu di filter ulang
+
+
+                        List<ObjectId> actObjectIds = new ArrayList<>();
+                        actObjectIds.addAll(students.get(iStd).getOptionHistories());
+                        actObjectIds.add(students.get(iStd).getSecondChoice());
+                        System.out.println("actObjectIds");
+                        System.out.println(students.get(iStd).get_id() + "-" + students.get(iStd).getName() + "-students.get(iStd).getSecondChoice():" + students.get(iStd).getSecondChoice());
+                        for (ObjectId oid: actObjectIds
+                        ) {
+                            System.out.println("->actObjectId:" + oid);
+                        }
+
+                        List<ObjectId> oriObjectIds = new ArrayList<>();
+                        oriObjectIds.addAll(oriStudents.get(iStd).getOptionHistories());
+                        oriObjectIds.add(oriStudents.get(iStd).getSecondChoice());
+                        System.out.println("oriObjectIds");
+                        for (ObjectId oid: oriObjectIds
+                             ) {
+                            System.out.println("->oriObjectId:" + oid);
+                        }
+
+                        students.get(iStd).setOptionHistories(actObjectIds);
+                        oriStudents.get(iStd).setOptionHistories(oriObjectIds);
+
+                        //Integer idxFirstChoiceOption = findData.findOptionIdxByChoice(students.get(iStd).getFirstChoice(), ppdbOptions);
                         students.remove(iStd); //hapus siswa
                         kekuranganQuota--;
                     }
@@ -175,7 +259,10 @@ public class MyRunner implements CommandLineRunner {
                 }
 
 
+
                 ppdbOptions.get(iOpt).setPpdbRegistrationList(students);
+                ppdbOptions.get(iOpt).setOriRegistrationList(oriStudents);
+
                 ppdbOptions.set(iOpt, ppdbOptions.get(iOpt));
             }
         }
@@ -203,6 +290,11 @@ public class MyRunner implements CommandLineRunner {
                 }
             }
         }
+    }
+
+    public static<T> List<T> addToList(List<T> target, Stream<T> source) {
+        target.addAll(source.collect(Collectors.toList()));
+        return target;
     }
 
     public void checkIfAnyRemainingQuota(List<PpdbOption> ppdbOptions){

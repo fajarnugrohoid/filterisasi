@@ -5,6 +5,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "ppdb_registrations_2020")
 public class PpdbRegistration {
 
@@ -51,6 +54,7 @@ public class PpdbRegistration {
 
     private Integer choiceIteration = 0; //status saat ini diterima disekolah mana
 
+    private List<ObjectId> optionHistories = new ArrayList<>();
 
     public PpdbRegistration() {
     }
@@ -63,7 +67,8 @@ public class PpdbRegistration {
                             ObjectId firstChoiceSchool, ObjectId secondChoiceSchool,
                             ObjectId swastaChoiceSchool, Integer statusSeleksi,
                             Double skorJarak1, Double skorPeserta,
-                            Integer choiceIteration
+                            Integer choiceIteration,
+                            List<ObjectId> optionHistories
     ) {
         this._id = _id;
         this.jenjangPendaftaran = jenjangPendaftaran;
@@ -89,6 +94,7 @@ public class PpdbRegistration {
         this.skorJarak1 = skorJarak1;
         this.skorPeserta = skorPeserta;
         this.choiceIteration = choiceIteration;
+        this.optionHistories = optionHistories;
     }
 
     public ObjectId get_id() {
@@ -281,5 +287,13 @@ public class PpdbRegistration {
 
     public void setChoiceIteration(Integer choiceIteration) {
         this.choiceIteration = choiceIteration;
+    }
+
+    public List<ObjectId> getOptionHistories() {
+        return optionHistories;
+    }
+
+    public void setOptionHistories(List<ObjectId> optionHistories) {
+        this.optionHistories = optionHistories;
     }
 }

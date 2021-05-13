@@ -49,6 +49,8 @@ public class PpdbOption {
 
     private Integer quotaBalance = 0;
 
+    private List<PpdbRegistration> oriRegistrationList;
+
     public PpdbOption() {
     }
 
@@ -56,7 +58,8 @@ public class PpdbOption {
                       Integer quota_foreigner, Integer total_quota, ObjectId schoolId,
                       List<PpdbRegistration> ppdbRegistrationList,
                       PpdbSchool ppdb_schools,
-                      boolean needFilter, Integer sisaQuota, Integer majorId, boolean checkQuota, Integer quotaBalance
+                      boolean needFilter, Integer sisaQuota, Integer majorId, boolean checkQuota, Integer quotaBalance,
+                      List<PpdbRegistration> oriRegistrationList
                       ) {
         this._id = _id;
         this.name = name;
@@ -73,6 +76,7 @@ public class PpdbOption {
         this.majorId = majorId;
         this.checkQuota = checkQuota;
         this.quotaBalance = quotaBalance;
+        this.oriRegistrationList = oriRegistrationList;
     }
 
 
@@ -194,5 +198,13 @@ public class PpdbOption {
 
     public void setQuotaBalance(Integer quotaBalance) {
         this.quotaBalance = quotaBalance;
+    }
+
+    public List<PpdbRegistration> getOriRegistrationList() {
+        return oriRegistrationList;
+    }
+
+    public void setOriRegistrationList(List<PpdbRegistration> oriRegistrationList) {
+        this.oriRegistrationList = oriRegistrationList;
     }
 }
