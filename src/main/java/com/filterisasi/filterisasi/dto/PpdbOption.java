@@ -38,7 +38,7 @@ public class PpdbOption {
 
     private List<PpdbRegistration> ppdbRegistrationList;
 
-    private boolean filtered = true;
+    private boolean needFilter = true;
 
     private Integer sisaQuota = 0;
 
@@ -47,6 +47,8 @@ public class PpdbOption {
 
     private boolean checkQuota = false;
 
+    private Integer quotaBalance = 0;
+
     public PpdbOption() {
     }
 
@@ -54,7 +56,7 @@ public class PpdbOption {
                       Integer quota_foreigner, Integer total_quota, ObjectId schoolId,
                       List<PpdbRegistration> ppdbRegistrationList,
                       PpdbSchool ppdb_schools,
-                      boolean filtered, Integer sisaQuota, Integer majorId, boolean checkQuota
+                      boolean needFilter, Integer sisaQuota, Integer majorId, boolean checkQuota, Integer quotaBalance
                       ) {
         this._id = _id;
         this.name = name;
@@ -66,10 +68,11 @@ public class PpdbOption {
         this.schoolId = schoolId;
         this.ppdbRegistrationList = ppdbRegistrationList;
         this.ppdb_schools = ppdb_schools;
-        this.filtered = filtered;
+        this.needFilter = needFilter;
         this.sisaQuota = sisaQuota;
         this.majorId = majorId;
         this.checkQuota = checkQuota;
+        this.quotaBalance = quotaBalance;
     }
 
 
@@ -153,12 +156,12 @@ public class PpdbOption {
         this.ppdb_schools = ppdb_schools;
     }
 
-    public boolean isFiltered() {
-        return filtered;
+    public boolean isNeedFilter() {
+        return needFilter;
     }
 
-    public void setFiltered(boolean filtered) {
-        this.filtered = filtered;
+    public void setNeedFilter(boolean needFilter) {
+        this.needFilter = needFilter;
     }
 
     public Integer getSisaQuota() {
@@ -183,5 +186,13 @@ public class PpdbOption {
 
     public void setCheckQuota(boolean checkQuota) {
         this.checkQuota = checkQuota;
+    }
+
+    public Integer getQuotaBalance() {
+        return quotaBalance;
+    }
+
+    public void setQuotaBalance(Integer quotaBalance) {
+        this.quotaBalance = quotaBalance;
     }
 }

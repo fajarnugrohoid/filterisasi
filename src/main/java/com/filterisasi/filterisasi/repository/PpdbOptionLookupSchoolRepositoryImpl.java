@@ -36,7 +36,7 @@ public class PpdbOptionLookupSchoolRepositoryImpl implements PpdbOptionLookupSch
     public List<PpdbOption> lookupPpdbOptionPpdbSchool() {
         System.out.println("lookupPpdbOptionPpdbSchool");
 
-        String a[]
+        String names[]
                 = new String[] {
                             "SMK NEGERI 4 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - PERPINDAHAN",
                             "SMK NEGERI 4 BANDUNG - TEKNIK KOMPUTER DAN INFORMASI - ANAK GURU",
@@ -55,7 +55,7 @@ public class PpdbOptionLookupSchoolRepositoryImpl implements PpdbOptionLookupSch
 
                 ), */
                 match(
-                        new Criteria("name").in(Arrays.asList(a))
+                        new Criteria("name").in(Arrays.asList(names))
 
                 ),
                 //lookup("users", "postedBy", "_id", "user")
@@ -105,6 +105,48 @@ public class PpdbOptionLookupSchoolRepositoryImpl implements PpdbOptionLookupSch
         List<PpdbOption> results = mongoTemplate.aggregate(aggregation, mongoTemplate.getCollectionName(PpdbOption.class), PpdbOption.class).getMappedResults();
 
         System.out.println("results:" + results.size());
+        return results;
+    }
+
+    @Override
+    public List<PpdbOption> lookupPpdbOptionPpdbSchoolByJalur(String jalurs[]) {
+        System.out.println("lookupPpdbOptionPpdbSchool");
+
+        ObjectId schoolId[] = new ObjectId[]{
+                new ObjectId("5c7fab1e4b9f621fd05374ef"),
+                new ObjectId("5c7fab1e4b9f621fd05374ed"),
+        };
+
+        Aggregation aggregation = Aggregation.newAggregation(
+
+                match(
+                        new Criteria("type").in(Arrays.asList(jalurs)).
+                                andOperator(new Criteria("school_id").in(Arrays.asList(schoolId)))
+
+                ),
+                new AggregationOperation() {
+                    @Override
+                    public Document toDocument(AggregationOperationContext context) {
+                        return new Document("$lookup",
+                                new Document("from", "ppdb_schools")
+                                        .append("let", new Document("school_id", "$school_id"))
+                                        .append("pipeline", Arrays.asList(
+                                                new Document("$match",
+                                                        new Document("$expr",
+                                                                new Document(
+                                                                        "$eq", Arrays.asList("$_id", "$$school_id")
+                                                                )
+                                                        ))))
+                                        .append("as", "ppdb_schools"));
+                    }
+                },
+                unwind("$ppdb_schools"),
+                sort(Direction.ASC, "name"),sort(Direction.ASC, "type"),
+                project().andExclude("_class")
+        );
+
+        List<PpdbOption> results = mongoTemplate.aggregate(aggregation, mongoTemplate.getCollectionName(PpdbOption.class), PpdbOption.class).getMappedResults();
+
         return results;
     }
 
