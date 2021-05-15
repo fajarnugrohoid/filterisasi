@@ -11,7 +11,7 @@ public class PpdbView {
 
     public void displayOption(List<PpdbOption> ppdbOptions){
         for (int iOpt = 0; iOpt <ppdbOptions.size() ; iOpt++) {
-            System.out.println("ppdbOption:" + iOpt + "-" + ppdbOptions.get(iOpt).get_id()  + " - " +
+            System.out.println("view-ppdbOption:" + iOpt + "-" + ppdbOptions.get(iOpt).get_id()  + " - " +
                     ppdbOptions.get(iOpt).getName() +  " - " +
                     ppdbOptions.get(iOpt).getPpdb_schools().get_Id() +
                     " # P:" + ppdbOptions.get(iOpt).getPpdbRegistrationList().size() +
