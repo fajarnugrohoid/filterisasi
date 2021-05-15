@@ -97,7 +97,7 @@ public class MyRunner implements CommandLineRunner {
         initializationOutcast.setOptionOutcast(ppdbOptions);
 
         //List<PpdbRegistration> ppdbRegistrations = ppdbRegistrationRepository.getByFirstChoice();
-
+        ppdbView.displayOption(ppdbOptions);
         System.out.println("==============================================================");
         potongBerdasarkanQuota(ppdbOptions);
 
@@ -133,6 +133,7 @@ public class MyRunner implements CommandLineRunner {
                     optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), "perpindahan", ppdbOptions);
                 }
 
+                System.out.println( "checkQuotaBalance " +  ppdbOptions.get(iOpt).getName() + ":" + ppdbOptions.get(iOpt).getQuotaBalance() + " && " + ppdbOptions.get(optTargetIdx).getQuotaBalance());
                 if ((ppdbOptions.get(iOpt).getQuotaBalance() < 0) && (ppdbOptions.get(optTargetIdx).getQuotaBalance() > 0 ) ){
 
                     //search siswa yang sudah terlempar, dengan tracking dari ori registration
@@ -141,14 +142,30 @@ public class MyRunner implements CommandLineRunner {
                         System.out.println("set quota balance:" + ppdbOptions.get(iOpt).getName() +
                                         " oriStudent:" + ppdbOptions.get(iOpt).getOriRegistrationList().size()
                                 );
-                        Integer sisaQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
-                        Integer totalQuotaOptionCur = ppdbOptions.get(iOpt).getQuota() + sisaQuotaTarget;
-                        Integer totalQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - sisaQuotaTarget;
+
+                        //quotaBalance, jika kekurangan jadi negatif
+
+                        Integer avalaibleQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
+                        System.out.println("sisaQuotaTarget:" + avalaibleQuotaTarget + "=" + ppdbOptions.get(optTargetIdx).getQuota() + "-" + ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size());
+                        Integer transferQuotaBasedOnNeed = 0;
+                        Integer sisaQuotaTarget = 0;
+                        //cek jika sisa quota target lebih besar dari (kebutuhan quota) dijadikan positif Math.abs
+
+                        if ( avalaibleQuotaTarget > Math.abs(ppdbOptions.get(iOpt).getQuotaBalance())){
+                            sisaQuotaTarget = (avalaibleQuotaTarget + ppdbOptions.get(iOpt).getQuotaBalance());
+                            transferQuotaBasedOnNeed = avalaibleQuotaTarget - sisaQuotaTarget;
+                        }else{
+                            transferQuotaBasedOnNeed = avalaibleQuotaTarget;
+                        }
+                        System.out.println("ppdbOptions.get(iOpt).getQuota():" + ppdbOptions.get(iOpt).getQuota() + " + " + transferQuotaBasedOnNeed);
+                        Integer totalQuotaOptionCur = ppdbOptions.get(iOpt).getQuota() + transferQuotaBasedOnNeed;
+                        Integer totalQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - transferQuotaBasedOnNeed;
+
                         ppdbOptions.get(optTargetIdx).setQuota(totalQuotaTarget);
                         ppdbOptions.get(iOpt).setQuota(totalQuotaOptionCur);
 
-                        ppdbOptions.get(iOpt).setQuotaBalance(ppdbOptions.get(iOpt).getQuotaBalance()+sisaQuotaTarget);
-                        ppdbOptions.get(optTargetIdx).setQuotaBalance(ppdbOptions.get(optTargetIdx).getQuotaBalance()-sisaQuotaTarget);
+                        ppdbOptions.get(iOpt).setQuotaBalance(ppdbOptions.get(iOpt).getQuotaBalance()+transferQuotaBasedOnNeed);
+                        ppdbOptions.get(optTargetIdx).setQuotaBalance(ppdbOptions.get(optTargetIdx).getQuotaBalance()-transferQuotaBasedOnNeed);
 
                         for (int iOriStd = 0; iOriStd <ppdbOptions.get(iOpt).getOriRegistrationList().size() ; iOriStd++) {
                             List<ObjectId> oriStdHistories = ppdbOptions.get(iOpt).getOriRegistrationList().get(iOriStd).getOptionHistories();
@@ -165,8 +182,6 @@ public class MyRunner implements CommandLineRunner {
                                      for (int iStdLemparan = 0; iStdLemparan <ppdbRegistrationList.size() ; iStdLemparan++) {
                                          //cek id siswa sama atau tidak dengan yang di ori siswa
                                          if (ppdbRegistrationList.get(iStdLemparan).get_id().equals(ppdbOptions.get(iOpt).getOriRegistrationList().get(iOriStd).get_id())){
-
-
 
                                              List<PpdbRegistration> firstChoiceRegistrationList = new ArrayList<>();
                                              firstChoiceRegistrationList.clear();
@@ -198,7 +213,7 @@ public class MyRunner implements CommandLineRunner {
 
                                              System.out.println("optFirstChoice" + ppdbOptions.get(optionIdxFirstChoice).getName());
                                              for (int i = 0; i <ppdbOptions.get(optionIdxFirstChoice).getPpdbRegistrationList().size() ; i++) {
-                                                 System.out.println("aft2==>" + ppdbOptions.get(optionIdxFirstChoice).getPpdbRegistrationList().get(i).getName());
+                                                 System.out.println("aft==>" + ppdbOptions.get(optionIdxFirstChoice).getPpdbRegistrationList().get(i).getName());
                                              }
 
 
@@ -223,27 +238,30 @@ public class MyRunner implements CommandLineRunner {
                 List<PpdbRegistration> students = ppdbOptions.get(iOpt).getPpdbRegistrationList();
                 List<PpdbRegistration> oriStudents = ppdbOptions.get(iOpt).getOriRegistrationList();
                 Collections.sort(students, new StudentComparator());
+                System.out.println("potong siswa " + ppdbOptions.get(iOpt).getPpdbRegistrationList().size() + " > " + ppdbOptions.get(iOpt).getQuota());
                 if (ppdbOptions.get(iOpt).getPpdbRegistrationList().size() > ppdbOptions.get(iOpt).getQuota()) { //jika pendaftar lebih banyak dari quota, maka potong
 
+                    /*
                     if (ppdbOptions.get(optTargetIdx).isNeedFilter() == false){ //sudah tidak membutuhkan di filter ulang, karena sudah difilter
                         //jika lawannya atau targetnya ada sisa quota, maka
 
                         if (ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size() < ppdbOptions.get(optTargetIdx).getQuota()) {
                             System.out.println("set quota transfer " + ppdbOptions.get(iOpt).getName());
+
                             Integer sisaQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
                             Integer totalQuotaOptionCur = ppdbOptions.get(iOpt).getQuota() + sisaQuotaTarget;
                             Integer totalQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - sisaQuotaTarget;
                             ppdbOptions.get(optTargetIdx).setQuota(totalQuotaTarget);
                             ppdbOptions.get(iOpt).setQuota(totalQuotaOptionCur);
                         }
-                    }
+                    } */
 
 
                     Integer kekuranganQuota = 0;
 
                     for (int iStd = students.size()-1; iStd>ppdbOptions.get(iOpt).getQuota()-1 ; iStd--) {
 
-                        System.out.println("option:" + iOpt + " - " + students.get(iStd).get_id() +
+                        System.out.println("option:" + iOpt + ppdbOptions.get(iOpt).getName() + " - " + students.get(iStd).get_id() +
                                 " sec:" + students.get(iStd).getSecondChoice());
 
                         Integer idxTargetOption = null;

@@ -32,6 +32,9 @@ public class PpdbView {
                         ppdbRegistrations.get(std).getSkorJarak1());
             }
 
+            /*
+            **ori registration students
+            **
             List<PpdbRegistration> oriRegistrations = ppdbOptions.get(iOpt).getOriRegistrationList();
             for (int std = 0; std <oriRegistrations.size() ; std++) {
                 if (iOpt==ppdbOptions.size()-1) continue;
@@ -44,7 +47,7 @@ public class PpdbView {
                 for (int iHst = 0; iHst <oriRegistrations.get(std).getOptionHistories().size() ; iHst++) {
                     System.out.println("==>" + oriRegistrations.get(std).getOptionHistories().get(iHst).toString());
                 }
-            }
+            }*/
 
     }
 
