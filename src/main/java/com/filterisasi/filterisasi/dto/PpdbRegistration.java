@@ -52,9 +52,13 @@ public class PpdbRegistration {
     @Field("skor_peserta")
     private Double skorPeserta = 0.0;
 
-    private Integer choiceIteration = 0; //status saat ini diterima disekolah mana
+    private Integer acceptedOptionNo = 0; //status saat ini diterima disekolah mana
 
     private List<ObjectId> optionHistories = new ArrayList<>();
+
+    private ObjectId acceptedOptionId;
+
+    private boolean studentExist;
 
     public PpdbRegistration() {
     }
@@ -67,8 +71,10 @@ public class PpdbRegistration {
                             ObjectId firstChoiceSchool, ObjectId secondChoiceSchool,
                             ObjectId swastaChoiceSchool, Integer statusSeleksi,
                             Double skorJarak1, Double skorPeserta,
-                            Integer choiceIteration,
-                            List<ObjectId> optionHistories
+                            Integer acceptedOptionNo,
+                            List<ObjectId> optionHistories,
+                            ObjectId acceptedOptionId,
+                            boolean studentExist
     ) {
         this._id = _id;
         this.jenjangPendaftaran = jenjangPendaftaran;
@@ -93,8 +99,10 @@ public class PpdbRegistration {
         this.statusSeleksi = statusSeleksi;
         this.skorJarak1 = skorJarak1;
         this.skorPeserta = skorPeserta;
-        this.choiceIteration = choiceIteration;
+        this.acceptedOptionNo = acceptedOptionNo;
         this.optionHistories = optionHistories;
+        this.acceptedOptionId = acceptedOptionId;
+        this.studentExist = studentExist;
     }
 
     public ObjectId get_id() {
@@ -281,19 +289,35 @@ public class PpdbRegistration {
         this.skorPeserta = skorPeserta;
     }
 
-    public Integer getChoiceIteration() {
-        return choiceIteration;
-    }
-
-    public void setChoiceIteration(Integer choiceIteration) {
-        this.choiceIteration = choiceIteration;
-    }
-
     public List<ObjectId> getOptionHistories() {
         return optionHistories;
     }
 
     public void setOptionHistories(List<ObjectId> optionHistories) {
         this.optionHistories = optionHistories;
+    }
+
+    public Integer getAcceptedOptionNo() {
+        return acceptedOptionNo;
+    }
+
+    public void setAcceptedOptionNo(Integer acceptedOptionNo) {
+        this.acceptedOptionNo = acceptedOptionNo;
+    }
+
+    public ObjectId getAcceptedOptionId() {
+        return acceptedOptionId;
+    }
+
+    public void setAcceptedOptionId(ObjectId acceptedOptionId) {
+        this.acceptedOptionId = acceptedOptionId;
+    }
+
+    public boolean isStudentExist() {
+        return studentExist;
+    }
+
+    public void setStudentExist(boolean studentExist) {
+        this.studentExist = studentExist;
     }
 }

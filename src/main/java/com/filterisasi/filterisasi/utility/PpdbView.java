@@ -29,25 +29,27 @@ public class PpdbView {
                 System.out.println("ppdbRegistrations:" + std + "-" + ppdbRegistrations.get(std).get_id() + " - " +
                         ppdbRegistrations.get(std).getName() + " - " +
                         ppdbRegistrations.get(std).getSkorPeserta() + " - " +
-                        ppdbRegistrations.get(std).getSkorJarak1());
+                        ppdbRegistrations.get(std).getSkorJarak1() + " - " + ppdbRegistrations.get(std).getAcceptedOptionNo());
             }
 
             /*
             **ori registration students
-            **
-            List<PpdbRegistration> oriRegistrations = ppdbOptions.get(iOpt).getOriRegistrationList();
+            ***/
+            List<PpdbRegistration> oriRegistrations = ppdbOptions.get(iOpt).getPpdbRegistrationHistories();
             for (int std = 0; std <oriRegistrations.size() ; std++) {
                 if (iOpt==ppdbOptions.size()-1) continue;
 
-                System.out.println("ori ppdbRegistrations:" + std + "-" + oriRegistrations.get(std).get_id() + " - " +
+                System.out.println("Hist ppdbRegistrations:" + std + "-" + oriRegistrations.get(std).get_id() + " - " +
                         oriRegistrations.get(std).getName() + " - " +
-                        oriRegistrations.get(std).getOptionHistories()
+                        oriRegistrations.get(std).isStudentExist() +
+                        " accNo:" + oriRegistrations.get(std).getAcceptedOptionNo()
 
                 );
                 for (int iHst = 0; iHst <oriRegistrations.get(std).getOptionHistories().size() ; iHst++) {
                     System.out.println("==>" + oriRegistrations.get(std).getOptionHistories().get(iHst).toString());
                 }
-            }*/
+            }
+            /**/
 
     }
 

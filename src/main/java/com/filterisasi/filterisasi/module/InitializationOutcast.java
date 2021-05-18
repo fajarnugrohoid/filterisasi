@@ -31,7 +31,7 @@ public class InitializationOutcast {
         PpdbOption sekolahBuangan = new PpdbOption();
 
         sekolahBuangan.setPpdbRegistrationList(siswaBuangan);
-        sekolahBuangan.setOriRegistrationList(new ArrayList<>());
+        sekolahBuangan.setPpdbRegistrationHistories(new ArrayList<>());
         sekolahBuangan.set_id(idSekolahBuangan);
         sekolahBuangan.setName(nameSekolahBuangan);
         PpdbSchool tempSchool = new PpdbSchool();
