@@ -37,7 +37,7 @@ public class PpdbView {
             ***/
             List<PpdbRegistration> oriRegistrations = ppdbOptions.get(iOpt).getPpdbRegistrationHistories();
             for (int std = 0; std <oriRegistrations.size() ; std++) {
-                if (iOpt==ppdbOptions.size()-1) continue;
+                //if (iOpt==ppdbOptions.size()-1) continue;
 
                 System.out.println("Hist ppdbRegistrations:" + std + "-" + oriRegistrations.get(std).get_id() + " - " +
                         oriRegistrations.get(std).getName() + " - " +

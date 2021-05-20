@@ -22,7 +22,7 @@ public class FindData {
         return ppdbOptions.size()-1; //lempar ke sekolah buangan
     }
 
-    public Integer findOptionIdxByMajorIdandSchoolId(Integer majorId, ObjectId schoolId, String jalur, List<PpdbOption> ppdbOptions) {
+    public int findOptionIdxByMajorIdandSchoolId(Integer majorId, ObjectId schoolId, String jalur, List<PpdbOption> ppdbOptions) {
 
         for (int iOpt = 0; iOpt <ppdbOptions.size() ; iOpt++) {
             if (
@@ -33,27 +33,20 @@ public class FindData {
                 return iOpt;
             }
         }
-        return null;
+        return -1;
     }
 
-    public Integer findIndexFromStudentsById(List<PpdbRegistration> ppdbRegistrations, ObjectId studentId){
+    public int findIndexFromStudentsById(List<PpdbRegistration> ppdbRegistrations, ObjectId studentId){
+
         for (int iStd = 0; iStd <ppdbRegistrations.size() ; iStd++) {
             //System.out.println("findStudentIdxById:" + ppdbRegistrations.get(iStd).get_id() + "==" + studentId);
-            if (ppdbRegistrations.get(iStd).get_id()==studentId){
+            if (ppdbRegistrations.get(iStd).get_id().equals(studentId)){
                 return iStd;
             }
         }
-        return null;
+        return -1;
     }
 
-    public Integer findIndexStudentHistoryById(List<PpdbRegistration> ppdbRegistrationHistories, ObjectId studentId){
-        for (int iStd = 0; iStd <ppdbRegistrationHistories.size() ; iStd++) {
-            if (ppdbRegistrationHistories.get(iStd).get_id()==studentId){
-                return iStd;
-            }
-        }
-        return null;
-    }
 
 
 }
