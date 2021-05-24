@@ -61,12 +61,12 @@ public class TransferQuota {
             Collections.sort(students, new StudentComparator());
 
             if (jumlahPendaftar > quotaOption) { //butuh quota, cek ke nhun
-                Integer optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), targetJalurs.get(iJalur) , ppdbOptions);
-                Integer kekuranganQuota = jumlahPendaftar - quotaOption;
+                int optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), targetJalurs.get(iJalur) , ppdbOptions);
+                int kekuranganQuota = jumlahPendaftar - quotaOption;
                 if (ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size() < ppdbOptions.get(optTargetIdx).getQuota()){
-                    Integer targetQuota = ppdbOptions.get(optTargetIdx).getQuota();
-                    Integer targetJumlahSiswa = ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
-                    Integer sisaQuota = targetQuota - targetJumlahSiswa;
+                    int targetQuota = ppdbOptions.get(optTargetIdx).getQuota();
+                    int targetJumlahSiswa = ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
+                    int sisaQuota = targetQuota - targetJumlahSiswa;
                     if (sisaQuota > kekuranganQuota){
                         ppdbOptions.get(optTargetIdx).setQuota(targetQuota-kekuranganQuota);
                         ppdbOptions.get(iOpt).setQuota(quotaOption + kekuranganQuota); //harusnya kasih seperlunya

@@ -22,7 +22,7 @@ public class PpdbView {
         }
     }
 
-    public void displayStudent(List<PpdbOption> ppdbOptions, Integer iOpt){
+    public void displayStudent(List<PpdbOption> ppdbOptions, int iOpt){
 
 
             List<PpdbRegistration> ppdbRegistrations = ppdbOptions.get(iOpt).getPpdbRegistrationList();
@@ -43,7 +43,8 @@ public class PpdbView {
                 System.out.println("Hist ppdbRegistrations:" + std + "-" + oriRegistrations.get(std).get_id() + " - " +
                         oriRegistrations.get(std).getName() + " - " +
                         oriRegistrations.get(std).isStudentExist() +
-                        " accNo:" + oriRegistrations.get(std).getAcceptedOptionNo()
+                        " accNo:" + oriRegistrations.get(std).getAcceptedOptionNo() +
+                        " accId:" + oriRegistrations.get(std).getAcceptedOptionId()
 
                 );
                 for (int iHst = 0; iHst <oriRegistrations.get(std).getOptionHistories().size() ; iHst++) {

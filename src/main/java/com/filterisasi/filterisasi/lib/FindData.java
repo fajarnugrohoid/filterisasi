@@ -12,7 +12,7 @@ public class FindData {
     }
 
 
-    public Integer findIndexFromOptionsByChoice(ObjectId nextChoice, List<PpdbOption> ppdbOptions) {
+    public int findIndexFromOptionsByChoice(ObjectId nextChoice, List<PpdbOption> ppdbOptions) {
 
         for (int iOpt = 0; iOpt <ppdbOptions.size() ; iOpt++) {
             if (ppdbOptions.get(iOpt).get_id().equals(nextChoice)) {
@@ -22,7 +22,7 @@ public class FindData {
         return ppdbOptions.size()-1; //lempar ke sekolah buangan
     }
 
-    public int findOptionIdxByMajorIdandSchoolId(Integer majorId, ObjectId schoolId, String jalur, List<PpdbOption> ppdbOptions) {
+    public int findOptionIdxByMajorIdandSchoolId(int majorId, ObjectId schoolId, String jalur, List<PpdbOption> ppdbOptions) {
 
         for (int iOpt = 0; iOpt <ppdbOptions.size() ; iOpt++) {
             if (

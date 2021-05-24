@@ -22,10 +22,10 @@ public class InitializationOutcast {
         ObjectId idSekolahBuangan = new ObjectId("5eec2ca2b2e4ce405929310f");
         String nameSekolahBuangan = "SekolahBuangan";
         String typeSekolahBuangan = "";
-        Integer rombelSekolahBuangan = 0;
-        Integer quotaSekolahBuangan = 0;
-        Integer quotaForignerSekolahBuangan = 0;
-        Integer totalQuotaSekolahBuangan = 0;
+        int rombelSekolahBuangan = 0;
+        int quotaSekolahBuangan = 0;
+        int quotaForignerSekolahBuangan = 0;
+        int totalQuotaSekolahBuangan = 0;
         boolean filteredSekolahBuangan = false;
 
         List<PpdbRegistration> siswaBuangan = new ArrayList<>();

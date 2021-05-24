@@ -20,16 +20,16 @@ public class PpdbOption {
     private String type;
 
     @org.springframework.lang.Nullable
-    private Integer rombel = 0;
+    private int rombel = 0;
 
     @org.springframework.lang.Nullable
-    private Integer quota = 0;
+    private int quota = 0;
 
     @org.springframework.lang.Nullable
-    private Integer quota_foreigner = 0;
+    private int quota_foreigner = 0;
 
     @org.springframework.lang.Nullable
-    private Integer total_quota = 0;
+    private int total_quota = 0;
 
     @Field("school_id")
     private ObjectId schoolId;
@@ -41,25 +41,25 @@ public class PpdbOption {
 
     private boolean needFilter = true;
 
-    private Integer sisaQuota = 0;
+    private int sisaQuota = 0;
 
     @Field("major_id")
-    private Integer majorId;
+    private int majorId;
 
     private boolean checkQuota = false;
 
-    private Integer quotaBalance = 0;
+    private int quotaBalance = 0;
 
     private List<PpdbHistory> ppdbRegistrationHistories;
 
     public PpdbOption() {
     }
 
-    public PpdbOption(ObjectId _id, String name, String type, Integer rombel, Integer quota,
-                      Integer quota_foreigner, Integer total_quota, ObjectId schoolId,
+    public PpdbOption(ObjectId _id, String name, String type, int rombel, int quota,
+                      int quota_foreigner, int total_quota, ObjectId schoolId,
                       List<PpdbRegistration> ppdbRegistrationList,
                       PpdbSchool ppdb_schools,
-                      boolean needFilter, Integer sisaQuota, Integer majorId, boolean checkQuota, Integer quotaBalance,
+                      boolean needFilter, int sisaQuota, int majorId, boolean checkQuota, int quotaBalance,
                       List<PpdbHistory> ppdbRegistrationHistories
                       ) {
         this._id = _id;
@@ -105,31 +105,31 @@ public class PpdbOption {
         this.type = type;
     }
 
-    public Integer getRombel() {
+    public int getRombel() {
         return rombel;
     }
 
-    public void setRombel(Integer rombel) {
+    public void setRombel(int rombel) {
         this.rombel = rombel;
     }
 
-    public Integer getQuota() {
+    public int getQuota() {
         return quota;
     }
 
-    public void setQuota(Integer quota) {
+    public void setQuota(int quota) {
         this.quota = quota;
     }
 
-    public Integer getQuota_foreigner() {
+    public int getQuota_foreigner() {
         return quota_foreigner;
     }
 
-    public Integer getTotal_quota() {
+    public int getTotal_quota() {
         return total_quota;
     }
 
-    public void setTotal_quota(Integer total_quota) {
+    public void setTotal_quota(int total_quota) {
         this.total_quota = total_quota;
     }
 
@@ -141,7 +141,7 @@ public class PpdbOption {
         this.schoolId = schoolId;
     }
 
-    public void setQuota_foreigner(@Nullable Integer quota_foreigner) {
+    public void setQuota_foreigner(@Nullable int quota_foreigner) {
         this.quota_foreigner = quota_foreigner;
     }
 
@@ -169,19 +169,19 @@ public class PpdbOption {
         this.needFilter = needFilter;
     }
 
-    public Integer getSisaQuota() {
+    public int getSisaQuota() {
         return sisaQuota;
     }
 
-    public void setSisaQuota(Integer sisaQuota) {
+    public void setSisaQuota(int sisaQuota) {
         this.sisaQuota = sisaQuota;
     }
 
-    public Integer getMajorId() {
+    public int getMajorId() {
         return majorId;
     }
 
-    public void setMajorId(Integer majorId) {
+    public void setMajorId(int majorId) {
         this.majorId = majorId;
     }
 
@@ -193,11 +193,11 @@ public class PpdbOption {
         this.checkQuota = checkQuota;
     }
 
-    public Integer getQuotaBalance() {
+    public int getQuotaBalance() {
         return quotaBalance;
     }
 
-    public void setQuotaBalance(Integer quotaBalance) {
+    public void setQuotaBalance(int quotaBalance) {
         this.quotaBalance = quotaBalance;
     }
 

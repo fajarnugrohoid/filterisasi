@@ -3,10 +3,7 @@ package com.filterisasi.filterisasi.resource;
 import com.filterisasi.filterisasi.dto.PpdbFiltered;
 import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbRegistration;
-import com.filterisasi.filterisasi.lib.FindData;
-import com.filterisasi.filterisasi.lib.StudentComparator;
-import com.filterisasi.filterisasi.lib.StudentHistory;
-import com.filterisasi.filterisasi.lib.TransformData;
+import com.filterisasi.filterisasi.lib.*;
 import com.filterisasi.filterisasi.model.PpdbHistory;
 import com.filterisasi.filterisasi.module.CheckQuotaBalance;
 import com.filterisasi.filterisasi.module.InitializationOutcast;
@@ -37,6 +34,7 @@ public class MyRunner implements CommandLineRunner {
     private TransformData transformData;
     private CheckQuotaBalance checkQuotaBalance;
     private StudentHistory studentHistory;
+    private UpdateData updateData;
     public MyRunner(PpdbOptionLookupSchoolRepository ppdbOptionLookupSchoolRepository,
                     PpdbRegistrationRepository ppdbRegistrationRepository,
                     PpdbFilteredRepository ppdbFilteredRepository
@@ -52,6 +50,7 @@ public class MyRunner implements CommandLineRunner {
         this.transformData = new TransformData();
         this.studentHistory = new StudentHistory(findData);
         this.checkQuotaBalance = new CheckQuotaBalance(this.findData, this.studentHistory);
+        this.updateData = new UpdateData();
 
     }
 
@@ -114,7 +113,7 @@ public class MyRunner implements CommandLineRunner {
         initializationOutcast.setOptionOutcast(ppdbOptions);
 
         //List<PpdbRegistration> ppdbRegistrations = ppdbRegistrationRepository.getByFirstChoice();
-        ppdbView.displayOption(ppdbOptions);
+        //ppdbView.displayOption(ppdbOptions);
         System.out.println("==============================================================");
         potongBerdasarkanQuota(ppdbOptions);
 
@@ -138,8 +137,6 @@ public class MyRunner implements CommandLineRunner {
                         " sts:" + ppdbOptions.get(iOpt).isNeedFilter() + "-qBalance:" + ppdbOptions.get(iOpt).getQuotaBalance());
 
 
-
-                //cari dulu option index lawannya, kali aja, di jalur lawannya, ada siswa quota, sehingga bisa meminta
                 int optTargetIdx = -1;
                 if (ppdbOptions.get(iOpt).getType().equalsIgnoreCase("perpindahan")) {
                     optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), "anak-guru", ppdbOptions);
@@ -150,189 +147,95 @@ public class MyRunner implements CommandLineRunner {
 
                 this.checkQuotaBalance.transferQuotaBalance(ppdbOptions, iOpt, optTargetIdx);
 
-                System.out.println(ppdbOptions.get(iOpt).getName() +
-                        " getPpdbRegistrationList1:" +  ppdbOptions.get(iOpt).getPpdbRegistrationList().size()
-                );
-
                 List<PpdbRegistration> students = ppdbOptions.get(iOpt).getPpdbRegistrationList();
                 List<PpdbHistory> studentActOptionHistories = new ArrayList<>();
                 studentActOptionHistories.addAll(ppdbOptions.get(iOpt).getPpdbRegistrationHistories());
 
                 Collections.sort(students, new StudentComparator());
                 System.out.println(ppdbOptions.get(iOpt).getName()  + " potong siswa " + ppdbOptions.get(iOpt).getPpdbRegistrationList().size() + " > " + ppdbOptions.get(iOpt).getQuota());
-                if (ppdbOptions.get(iOpt).getPpdbRegistrationList().size() > ppdbOptions.get(iOpt).getQuota()) { //jika pendaftar lebih banyak dari quota, maka potong
 
+                if (ppdbOptions.get(iOpt).getPpdbRegistrationList().size() > ppdbOptions.get(iOpt).getQuota()) { //jika pendaftar lebih banyak dari quota, maka potong
 
                     int kekuranganQuota = 0;
 
                     for (int iStd = students.size()-1; iStd>ppdbOptions.get(iOpt).getQuota()-1 ; iStd--) {
-
-                        System.out.println("option:" + iOpt + " " + ppdbOptions.get(iOpt).getName() + " - " + students.get(iStd).get_id() + " - " + students.get(iStd).getName() +
-                                " sec:" + students.get(iStd).getSecondChoice());
-
                         int idxTargetOption = -1;
-                        int studentHistoryIdxById = studentHistory.findIndexStudentHistoryById(studentActOptionHistories, students.get(iStd).get_id());
 
-                        //PpdbRegistration addHistoryStudentTarget = new PpdbRegistration();
+                        System.out.println("siswa lempar:" + students.get(iStd).getName() + " accNo:" + students.get(iStd).getAcceptedOptionNo());
+                        ObjectId acceptedOptionId;
+                        int acceptedOptionNo = -1;
+
                         if (students.get(iStd).getAcceptedOptionNo()==0){ //saat ini posisi siswa tidak diterima pilihan 1, maka ambil informasi skeolah pilihan 2
                             idxTargetOption = findData.findIndexFromOptionsByChoice(students.get(iStd).getSecondChoice(),ppdbOptions);
 
-                            System.out.println("bef-targetOptionName:" + ppdbOptions.get(idxTargetOption).getName() +
-                                    " regSize:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().size() +
-                                    " histSize:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().size()
-                            );
-                            for (int i = 0; i <ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().size() ; i++) {
-                                System.out.println("reg-targetStudent==>" +
-                                        ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getName() +
-                                        " accId:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getAcceptedOptionId() +
-                                        " accNo:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getAcceptedOptionNo()
-                                );
-                            }
-                            for (int i = 0; i <ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().size() ; i++) {
-                                System.out.println("hist-targetStudent==>" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getName() + " isExist:" +
-                                        ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).isStudentExist() +
-                                        " accId:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getAcceptedOptionId() +
-                                        " accNo:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getAcceptedOptionNo()
-                                );
-                            }
-
                             students.get(iStd).setAcceptedOptionNo(1);
                             students.get(iStd).setAcceptedOptionId(students.get(iStd).getSecondChoice());
-                            //addHistoryStudentTarget = students.get(iStd);
 
-                            studentActOptionHistories.get(studentHistoryIdxById).setStudentExist(false);
-                            studentActOptionHistories.get(studentHistoryIdxById).setAcceptedOptionNo(1);
-                            studentActOptionHistories.get(studentHistoryIdxById).setAcceptedOptionId(students.get(iStd).getSecondChoice());
-
-                            System.out.println("if getAcceptedOptionNo()==0 " +
-                                    studentActOptionHistories.get(studentHistoryIdxById).getName() +
-                                    " isExist:" + studentActOptionHistories.get(studentHistoryIdxById).isStudentExist());
+                            acceptedOptionId = students.get(iStd).getSecondChoice();
+                            acceptedOptionNo = 1;
 
                         }else if (students.get(iStd).getAcceptedOptionNo()==1) { //saat ini posisi siswa tidak diterima pilihan 2, maka ambil informasi skeolah pilihan 3
                             //harusnya ke option pilihan swasta
                             idxTargetOption = ppdbOptions.size()-1;
 
-                            System.out.println("bef-targetOptionName:" + ppdbOptions.get(idxTargetOption).getName() +
-                                    " regSize:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().size() +
-                                    " histSize:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().size()
-                                    );
-                            for (int i = 0; i <ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().size() ; i++) {
-                                System.out.println("reg-targetStudent==>" +
-                                        ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getName() +
-                                        " accId:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getAcceptedOptionId() +
-                                        " accNo:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getAcceptedOptionNo()
-                                );
-                            }
-                            for (int i = 0; i <ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().size() ; i++) {
-                                System.out.println("hist-targetStudent==>" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getName() + " isExist:" +
-                                        ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).isStudentExist() +
-                                        " accId:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getAcceptedOptionId() +
-                                        " accNo:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getAcceptedOptionNo()
-                                );
-                            }
-
                             students.get(iStd).setAcceptedOptionNo(2);
                             students.get(iStd).setAcceptedOptionId(ppdbOptions.get(idxTargetOption).get_id());
-                            //addHistoryStudentTarget = students.get(iStd);
 
-
-                            studentActOptionHistories.get(studentHistoryIdxById).setStudentExist(false);
-                            studentActOptionHistories.get(studentHistoryIdxById).setAcceptedOptionNo(2);
-                            studentActOptionHistories.get(studentHistoryIdxById).setAcceptedOptionId(ppdbOptions.get(idxTargetOption).get_id());
-
-                            //kalau untuk target isExist set true
-                            //tpi untuk active Student jdi set false, karena siswa telah dipindahkan
-                            System.out.println("else if getAcceptedOptionNo()==1 " +
-                                    studentActOptionHistories.get(studentHistoryIdxById).getName() +
-                                    " studentActExist:" + studentActOptionHistories.get(studentHistoryIdxById).isStudentExist());
+                            acceptedOptionId = ppdbOptions.get(idxTargetOption).get_id();
+                            acceptedOptionNo = 2;
 
                         }else{
                             idxTargetOption = ppdbOptions.size()-1;
                             students.get(iStd).setAcceptedOptionNo(2);
                             students.get(iStd).setAcceptedOptionId(ppdbOptions.get(idxTargetOption).get_id());
-                            //addHistoryStudentTarget = students.get(iStd);
 
-                            studentActOptionHistories.get(studentHistoryIdxById).setStudentExist(false);
-                            studentActOptionHistories.get(studentHistoryIdxById).setAcceptedOptionNo(2);
-                            studentActOptionHistories.get(studentHistoryIdxById).setAcceptedOptionId(ppdbOptions.get(idxTargetOption).get_id());
-
-
-                            System.out.println("else " +
-                                    studentActOptionHistories.get(studentHistoryIdxById).getName() + " " +
-                                    studentActOptionHistories.get(studentHistoryIdxById).isStudentExist());
+                            acceptedOptionId = ppdbOptions.get(idxTargetOption).get_id();
+                            acceptedOptionNo = 2;
                         }
 
-                        //this.studentHistory.updateMember(students.get(iStd).get_id(),ppdbOptions);
 
-                        this.studentHistory.addOrUpdateHistoryStudentAllOptions1(ppdbOptions, idxTargetOption, iOpt, iStd);
 
+                        //update history pilihan pertama siswa yang akan dilempar
+                        List<PpdbHistory> studentTargetOptionHistories = new ArrayList<>();
+                        int idxPilihanPertamaDariSiswa = findData.findIndexFromOptionsByChoice(students.get(iStd).getFirstChoice(), ppdbOptions);
+                        studentTargetOptionHistories.addAll(ppdbOptions.get(idxPilihanPertamaDariSiswa).getPpdbRegistrationHistories());
+                        int idxHistoryFirstOption = studentHistory.findIndexStudentHistoryById(studentTargetOptionHistories, students.get(iStd).get_id());
+
+
+                        PpdbHistory updateHistoryDariSiswaYgTerlempar = this.updateData.updateStudent(
+                                ppdbOptions, idxPilihanPertamaDariSiswa,
+                                idxHistoryFirstOption,
+                                acceptedOptionId, acceptedOptionNo);
+                        studentTargetOptionHistories.set(idxHistoryFirstOption, updateHistoryDariSiswaYgTerlempar);
+                        ppdbOptions.get(idxPilihanPertamaDariSiswa).setPpdbRegistrationHistories(studentTargetOptionHistories);
 
                         ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().add(students.get(iStd)); //tambahkan siswa ke sekolah pilihan selanjutnya
-                        ppdbOptions.get(idxTargetOption).setNeedFilter(true); //rubah status needFilter=true,karena sekolah tsb dapat limpahan siswa, jadi perlu di filter ulang
 
-                        //addHistoryStudentTarget.setStudentExist(true);
-                        System.out.println("idxTargetOption:" + idxTargetOption);
-                        //System.out.println("addHistoryStudentTarget:" + addHistoryStudentTarget.get_id());
-                        System.out.println("getPpdbRegistrationHistories:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().size());
+                        PpdbOption updateNeedFilter = updateData.updateOption(ppdbOptions, idxTargetOption);
+                        ppdbOptions.set(idxTargetOption, updateNeedFilter); //rubah status needFilter=true,karena sekolah tsb dapat limpahan siswa, jadi perlu di filter ulang
 
                         students.remove(iStd); //hapus siswa
                         kekuranganQuota--;
 
-                        System.out.println("sekolah pilihan2:" + ppdbOptions.get(idxTargetOption).getName() +
-                                " p:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().size() +
-                                " q:" + ppdbOptions.get(idxTargetOption).getQuota() +
-                                " qBalance:" + ppdbOptions.get(idxTargetOption).getQuotaBalance()
-                        );
-
-                        System.out.println("aft-targetOptionName:" + ppdbOptions.get(idxTargetOption).getName());
-                        for (int i = 0; i <ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().size() ; i++) {
-                            System.out.println("reg-targetStudent==>" +
-                                    ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getName() +
-                                    " accId:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getAcceptedOptionId() +
-                                    " accNo:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().get(i).getAcceptedOptionNo()
+                        /*
+                        System.out.println( "aft:" + ppdbOptions.get(iOpt).getName() + " lempar: " + ppdbOptions.get(idxPilihanPertamaDariSiswa).getName());
+                        for (int i = 0; i <studentTargetOptionHistories.size() ; i++) {
+                            System.out.println(
+                                    studentTargetOptionHistories.get(i).getName() +
+                                            " accId:" + studentTargetOptionHistories.get(i).getAcceptedOptionId() +
+                                            " accNo:" + studentTargetOptionHistories.get(i).getAcceptedOptionNo()
                             );
-                        }
-                        for (int i = 0; i <ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().size() ; i++) {
-                            System.out.println("hist-targetStudent==>" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getName() + " isExist:" +
-                                    ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).isStudentExist() +
-                                    " accId:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getAcceptedOptionId() +
-                                    " accNo:" + ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(i).getAcceptedOptionNo()
-                            );
-                        }
+                        } */
 
-
-
-                    }
+                    }//end of for loop lempar siswa
                     ppdbOptions.get(iOpt).setQuotaBalance( ppdbOptions.get(iOpt).getQuotaBalance() + kekuranganQuota);
                 }
+
                 ppdbOptions.get(iOpt).setNeedFilter(false);
                 ppdbOptions.get(iOpt).setPpdbRegistrationList(students);
-                ppdbOptions.get(iOpt).setPpdbRegistrationHistories(studentActOptionHistories);
-
-                System.out.println("curOptionName:" + ppdbOptions.get(iOpt).getName());
-                for (int i = 0; i <ppdbOptions.get(iOpt).getPpdbRegistrationList().size() ; i++) {
-                    System.out.println("reg-curStudent==>" + ppdbOptions.get(iOpt).getPpdbRegistrationList().get(i).getName());
-                }
-                for (int i = 0; i <ppdbOptions.get(iOpt).getPpdbRegistrationHistories().size() ; i++) {
-                    System.out.println("hist-curStudent==>:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(i).getName() + " isExist:" +
-                            ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(i).isStudentExist() +
-                            " accId:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(i).getAcceptedOptionId() +
-                            " accNo:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(i).getAcceptedOptionNo()
-                    );
-                }
-
-                System.out.println(ppdbOptions.get(iOpt).getName() +
-                        " getPpdbRegistrationList2:" +  ppdbOptions.get(iOpt).getPpdbRegistrationList().size() +
-                        " q:" +  ppdbOptions.get(iOpt).getQuota() +
-                        " qBalance:" +  ppdbOptions.get(iOpt).getQuotaBalance()
-                );
 
 
-                System.out.println(ppdbOptions.get(iOpt).getName() +
-                        " getPpdbRegistrationList3:" +  ppdbOptions.get(iOpt).getPpdbRegistrationList().size()
-                );
-
-                ppdbOptions.set(iOpt, ppdbOptions.get(iOpt)); ///?
+                ppdbOptions.set(iOpt, ppdbOptions.get(iOpt));
             }
         }
 
@@ -350,17 +253,7 @@ public class MyRunner implements CommandLineRunner {
                 }
 
                 /*
-                if (
-                        ( ppdbOptions.get(iOpt).isNeedFilter() == true )
-                                ||
-                        ( (ppdbOptions.get(iOpt).getQuotaBalance() < 0 ) && (ppdbOptions.get(optTargetIdx).getQuotaBalance()>0) )
-                    ) {
-                    potongBerdasarkanQuota(ppdbOptions);
-                    break;
-                } */
-
                 int sisaQuota = ppdbOptions.get(optTargetIdx).getQuota() - ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
-
                 if (
                         ( ppdbOptions.get(iOpt).isNeedFilter() == true )
                                 ||
@@ -371,7 +264,14 @@ public class MyRunner implements CommandLineRunner {
                 ) {
                     potongBerdasarkanQuota(ppdbOptions);
                     break;
+                }*/
+                if (
+                        ppdbOptions.get(iOpt).isNeedFilter() == true
+                ) {
+                    potongBerdasarkanQuota(ppdbOptions);
+                    break;
                 }
+
             }
         }
     }

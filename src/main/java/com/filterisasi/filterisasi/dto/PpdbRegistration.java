@@ -44,7 +44,7 @@ public class PpdbRegistration {
     private ObjectId firstChoiceSchool;
     private ObjectId secondChoiceSchool;
     private ObjectId swastaChoiceSchool;
-    private Integer statusSeleksi;
+    private int statusSeleksi;
 
     @Field("score_jarak_1")
     private Double skorJarak1 = 0.0;
@@ -52,7 +52,7 @@ public class PpdbRegistration {
     @Field("skor_peserta")
     private Double skorPeserta = 0.0;
 
-    private Integer acceptedOptionNo = 0; //status saat ini diterima disekolah mana
+    private int acceptedOptionNo = 0; //status saat ini diterima disekolah mana
 
     private List<ObjectId> optionHistories = new ArrayList<>();
 
@@ -69,9 +69,9 @@ public class PpdbRegistration {
                             String age, String un, String name, String npsn, boolean approved,
                             String codeSchool, String schoolLevel, String codeType,
                             ObjectId firstChoiceSchool, ObjectId secondChoiceSchool,
-                            ObjectId swastaChoiceSchool, Integer statusSeleksi,
+                            ObjectId swastaChoiceSchool, int statusSeleksi,
                             Double skorJarak1, Double skorPeserta,
-                            Integer acceptedOptionNo,
+                            int acceptedOptionNo,
                             List<ObjectId> optionHistories,
                             ObjectId acceptedOptionId,
                             boolean studentExist
@@ -265,11 +265,11 @@ public class PpdbRegistration {
         this.swastaChoiceSchool = swastaChoiceSchool;
     }
 
-    public Integer getStatusSeleksi() {
+    public int getStatusSeleksi() {
         return statusSeleksi;
     }
 
-    public void setStatusSeleksi(Integer statusSeleksi) {
+    public void setStatusSeleksi(int statusSeleksi) {
         this.statusSeleksi = statusSeleksi;
     }
 
@@ -297,11 +297,11 @@ public class PpdbRegistration {
         this.optionHistories = optionHistories;
     }
 
-    public Integer getAcceptedOptionNo() {
+    public int getAcceptedOptionNo() {
         return acceptedOptionNo;
     }
 
-    public void setAcceptedOptionNo(Integer acceptedOptionNo) {
+    public void setAcceptedOptionNo(int acceptedOptionNo) {
         this.acceptedOptionNo = acceptedOptionNo;
     }
 
