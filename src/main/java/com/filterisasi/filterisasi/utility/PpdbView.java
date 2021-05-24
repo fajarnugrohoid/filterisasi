@@ -2,6 +2,7 @@ package com.filterisasi.filterisasi.utility;
 
 import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbRegistration;
+import com.filterisasi.filterisasi.model.PpdbHistory;
 
 import java.util.List;
 
@@ -34,8 +35,8 @@ public class PpdbView {
 
             /*
             **ori registration students
-            ***/
-            List<PpdbRegistration> oriRegistrations = ppdbOptions.get(iOpt).getPpdbRegistrationHistories();
+            ** */
+            List<PpdbHistory> oriRegistrations = ppdbOptions.get(iOpt).getPpdbRegistrationHistories();
             for (int std = 0; std <oriRegistrations.size() ; std++) {
                 //if (iOpt==ppdbOptions.size()-1) continue;
 
@@ -49,7 +50,7 @@ public class PpdbView {
                     System.out.println("==>" + oriRegistrations.get(std).getOptionHistories().get(iHst).toString());
                 }
             }
-            /**/
+
 
     }
 

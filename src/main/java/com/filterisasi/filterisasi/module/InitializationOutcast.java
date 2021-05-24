@@ -3,6 +3,7 @@ package com.filterisasi.filterisasi.module;
 import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbRegistration;
 import com.filterisasi.filterisasi.dto.PpdbSchool;
+import com.filterisasi.filterisasi.model.PpdbHistory;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -28,10 +29,11 @@ public class InitializationOutcast {
         boolean filteredSekolahBuangan = false;
 
         List<PpdbRegistration> siswaBuangan = new ArrayList<>();
+        List<PpdbHistory> siswaHistoryBuangan = new ArrayList<>();
         PpdbOption sekolahBuangan = new PpdbOption();
 
         sekolahBuangan.setPpdbRegistrationList(siswaBuangan);
-        sekolahBuangan.setPpdbRegistrationHistories(siswaBuangan);
+        sekolahBuangan.setPpdbRegistrationHistories(siswaHistoryBuangan);
         sekolahBuangan.set_id(idSekolahBuangan);
         sekolahBuangan.setName(nameSekolahBuangan);
         PpdbSchool tempSchool = new PpdbSchool();

@@ -1,5 +1,6 @@
 package com.filterisasi.filterisasi.dto;
 
+import com.filterisasi.filterisasi.model.PpdbHistory;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -49,7 +50,7 @@ public class PpdbOption {
 
     private Integer quotaBalance = 0;
 
-    private List<PpdbRegistration> ppdbRegistrationHistories;
+    private List<PpdbHistory> ppdbRegistrationHistories;
 
     public PpdbOption() {
     }
@@ -59,7 +60,7 @@ public class PpdbOption {
                       List<PpdbRegistration> ppdbRegistrationList,
                       PpdbSchool ppdb_schools,
                       boolean needFilter, Integer sisaQuota, Integer majorId, boolean checkQuota, Integer quotaBalance,
-                      List<PpdbRegistration> ppdbRegistrationHistories
+                      List<PpdbHistory> ppdbRegistrationHistories
                       ) {
         this._id = _id;
         this.name = name;
@@ -200,11 +201,11 @@ public class PpdbOption {
         this.quotaBalance = quotaBalance;
     }
 
-    public List<PpdbRegistration> getPpdbRegistrationHistories() {
+    public List<PpdbHistory> getPpdbRegistrationHistories() {
         return ppdbRegistrationHistories;
     }
 
-    public void setPpdbRegistrationHistories(List<PpdbRegistration> ppdbRegistrationHistories) {
+    public void setPpdbRegistrationHistories(List<PpdbHistory> ppdbRegistrationHistories) {
         this.ppdbRegistrationHistories = ppdbRegistrationHistories;
     }
 }
