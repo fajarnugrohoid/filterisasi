@@ -4,6 +4,7 @@ import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbRegistration;
 import com.filterisasi.filterisasi.lib.FindData;
 import com.filterisasi.filterisasi.lib.StudentHistory;
+import com.filterisasi.filterisasi.utility.PpdbView;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -12,9 +13,11 @@ import java.util.List;
 public class CheckQuotaBalance {
     private FindData findData;
     private StudentHistory studentHistory;
-    public CheckQuotaBalance(FindData findData, StudentHistory studentHistory) {
+    private PpdbView ppdbView;
+    public CheckQuotaBalance(FindData findData, StudentHistory studentHistory, PpdbView ppdbView) {
         this.findData = findData;
         this.studentHistory = studentHistory;
+        this.ppdbView = ppdbView;
     }
 
     public void transferQuotaBalance(List<PpdbOption> ppdbOptions, int iOpt, int optTargetIdx){
@@ -67,19 +70,10 @@ public class CheckQuotaBalance {
                         " qBalance:" + ppdbOptions.get(optTargetIdx).getQuotaBalance()
                 );
 
-                System.out.println("SekolahYgAkanMenarikSiswa:" + ppdbOptions.get(iOpt).getName());
-                for (int iOriStd = 0; iOriStd <ppdbOptions.get(iOpt).getPpdbRegistrationList().size() ; iOriStd++) {
-                    System.out.println("reg:"+
-                            ppdbOptions.get(iOpt).getPpdbRegistrationList().get(iOriStd).getName() +
-                            " accId:" + ppdbOptions.get(iOpt).getPpdbRegistrationList().get(iOriStd).getAcceptedOptionId() +
-                            " accNo:" + ppdbOptions.get(iOpt).getPpdbRegistrationList().get(iOriStd).getAcceptedOptionNo()
-
-                    );
-                }
-
                 for (int iOriStd = 0; iOriStd <ppdbOptions.get(iOpt).getPpdbRegistrationHistories().size() ; iOriStd++) {
                     System.out.println("hist:"+
-                            ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id() +
+                            " optionId:" + ppdbOptions.get(iOpt).get_id() +
+                            " studentId:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id() +
                             " name:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getName() +
                             " accId:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionId() +
                             " accNo:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo() +
@@ -87,62 +81,96 @@ public class CheckQuotaBalance {
                             " sec:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getSecondChoice()
                     );
 
+
+
                     ObjectId objectIdOptionTarik = null;
                     int idxOptionTarik = -1;
                     int idxStudentTarik = -1;
 
-                    //jika accNo=1, siswa tsb ada di secondChoice
-                    if (ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo()==1){
-                        System.out.println("tarik kembali ke pilihan");
+                    //cari siswa yg ada di history student, tapi tidak ada di registration
+                    //ppdbView.displayOption(ppdbOptions);
+                    if (ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionId()!=ppdbOptions.get(iOpt).get_id()){
+                        System.out.println("YgAKanDitarik==>" +
+                                ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getName() +
+                                " accId:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionId()
+                        );
 
-                        objectIdOptionTarik = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getSecondChoice();
-                        idxOptionTarik = findData.findIndexFromOptionsByChoice(objectIdOptionTarik, ppdbOptions);
-                        idxStudentTarik = findData.findIndexFromStudentsById(ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList(), ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id());
-                        /*
-                        System.out.println("idxOptionTarik:" + idxOptionTarik);
-                        System.out.println("idxStudentTarik:" + idxStudentTarik);
-                        for (int i = 0; i <ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().size() ; i++) {
-                            System.out.println("SiswaYgAkanDiTarik:" +
-                                    ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(i).get_id() + " " +
-                                    ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(i).getName()
-                            );
-                        }*/
-                        PpdbRegistration siswaYgDitarik = ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik);
-                        siswaYgDitarik.setAcceptedOptionNo(0);
-                        siswaYgDitarik.setAcceptedOptionId(ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getFirstChoice());
+                        if (ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo()!=0){
 
-                        ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).setAcceptedOptionNo(0);
-                        ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).setAcceptedOptionId(ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getFirstChoice());
+                        ObjectId histAcceptedOptionId = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionId();
+                        idxOptionTarik = findData.findIndexFromOptionsByChoice(histAcceptedOptionId, ppdbOptions);
+                        idxStudentTarik = findData.findIndexFromStudentsByIdandOption(ppdbOptions, idxOptionTarik, ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id());
 
-                        ppdbOptions.get(iOpt).getPpdbRegistrationList().add(siswaYgDitarik);
-                        ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().remove(idxStudentTarik);
+                        System.out.println(" ==>StdId:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id() +
+                                " name:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getName() +
+                                " idxOptionTarik:" + idxOptionTarik + " " + histAcceptedOptionId + " idxStudentTarik:" + idxStudentTarik);
+
+                        //ppdbView.displayOptionByIdx(ppdbOptions, idxOptionTarik);
+                        //ppdbView.displayOptionByIdx(ppdbOptions, iOpt);
+
+                        PpdbRegistration ppdbRegistration = ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik);
 
 
-                        ppdbOptions.get(idxOptionTarik).setNeedFilter(true);
+                        ObjectId acceptedOptionId = ppdbRegistration.getAcceptedOptionId();
+                        int acceptedOptionNo = ppdbRegistration.getAcceptedOptionNo();
+
+                        //perbedaan
+                        //ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo() 0
+                        //dengan ini
+                        //ppdbRegistration.getAcceptedOptionNo() 0
+
+                        //int idxStudentYgTelahDitarik = findData.findIndexFromStudentsByIdandOption(ppdbOptions, iOpt, ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id());
+
+
+
+                            //cek dia saat ini ketarik ke pilihan yang mana?
+                            if (ppdbOptions.get(iOpt).get_id()==ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik).getFirstChoice()){
+                                acceptedOptionId = ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik).getFirstChoice();
+                                acceptedOptionNo = 0;
+                                System.out.println("acceptedOption 1");
+                            }else if (ppdbOptions.get(iOpt).get_id()==ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik).getSecondChoice()){
+                                System.out.println("acceptedOption 2");
+                                acceptedOptionId = ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik).getSecondChoice();
+                                acceptedOptionNo = 1;
+                            }else{
+                                System.out.println("acceptedOption 3");
+                                acceptedOptionId = ppdbOptions.get(ppdbOptions.size()-1).get_id();
+                                acceptedOptionNo = 3;
+                            }
+
+                            if (acceptedOptionNo < ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo()) {
+
+                                ppdbOptions.get(iOpt).getPpdbRegistrationList().add(ppdbRegistration);
+                                ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().remove(idxStudentTarik);
+
+                                this.studentHistory.pullStudentHistory(ppdbOptions, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList(), idxStudentTarik, acceptedOptionId, acceptedOptionNo, idxOptionTarik); //history siswa yang ketarik siswanya dirubah
+
+                                //int idxActiveStudent = findData.findIndexFromStudentsByIdandOption(ppdbOptions, iOpt, ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id());
+                                this.studentHistory.pullStudentHistory(ppdbOptions, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList(), idxStudentTarik, acceptedOptionId, acceptedOptionNo, iOpt); //history siswa disekolah yang menarik siswa dirubah
+
+                                int idxFirstChoice = findData.findIndexFromOptionsByChoice(ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik).getFirstChoice(), ppdbOptions);
+                                //int idxStudentFirstChoice = findData.findIndexFromStudentsByIdandOption(ppdbOptions, idxFirstChoice, ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id());
+                                this.studentHistory.pullStudentHistory(ppdbOptions, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList(), idxStudentTarik, acceptedOptionId, acceptedOptionNo, idxFirstChoice); //ubah history siswa pilihan1
+
+                                int idxSecondChoice = findData.findIndexFromOptionsByChoice(ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik).getSecondChoice(), ppdbOptions);
+
+                                int idxStudentSecondChoice = findData.findIndexFromStudentsByIdandOption(ppdbOptions, idxSecondChoice, ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id());
+                                this.studentHistory.pullStudentHistory(ppdbOptions, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList(), idxStudentTarik, acceptedOptionId, acceptedOptionNo, idxSecondChoice); //ubah history siswa pilihan2
+
+                                int idxLastChoice = ppdbOptions.size() - 1;
+                                int idxStudentLastChoice = findData.findIndexFromStudentsByIdandOption(ppdbOptions, idxLastChoice, ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id());
+                                if (idxStudentLastChoice != -1)
+                                    this.studentHistory.pullStudentHistory(ppdbOptions, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList(), idxStudentTarik, acceptedOptionId, acceptedOptionNo, idxLastChoice); //ubah history siswa pilihan terakhir
+
+
+                                ppdbOptions.get(idxOptionTarik).setNeedFilter(true);
+                                System.out.println("=============================================================================");
+                                //ppdbView.displayOptionByIdx(ppdbOptions, idxOptionTarik);
+                                //ppdbView.displayOptionByIdx(ppdbOptions, iOpt);
+                            }
+                        }
+
                     }
-
-                    //jika accNo=2, siswa tsb ada di thirdChoice/buangan
-                    if (ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo()==2){
-                        System.out.println("tarik kembali ke pilihan");
-
-                        //objectIdOptionTarik = ppdbOptions.size()-1;
-                        idxOptionTarik = ppdbOptions.size()-1;
-                        idxStudentTarik = findData.findIndexFromStudentsById(ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList(), ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).get_id());
-
-                        PpdbRegistration siswaYgDitarik = ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(idxStudentTarik);
-                        siswaYgDitarik.setAcceptedOptionNo(1);
-                        siswaYgDitarik.setAcceptedOptionId(ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getSecondChoice());
-
-                        ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).setAcceptedOptionNo(1);
-                        ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).setAcceptedOptionId(ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getSecondChoice());
-
-                        ppdbOptions.get(iOpt).getPpdbRegistrationList().add(siswaYgDitarik);
-                        ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().remove(idxStudentTarik);
-                    }
-                    System.out.println("==>" +
-                            ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getName() + " " +
-                            ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo()
-                    );
 
                 } //end for loop registrationHistory
 

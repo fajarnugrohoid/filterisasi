@@ -47,6 +47,17 @@ public class FindData {
         return -1;
     }
 
+    public int findIndexFromStudentsByIdandOption(List<PpdbOption> ppdbOptions, int optionIdx, ObjectId studentId){
+
+        for (int iStd = 0; iStd <ppdbOptions.get(optionIdx).getPpdbRegistrationList().size() ; iStd++) {
+            //System.out.println("findStudentIdxById:" + ppdbRegistrations.get(iStd).get_id() + "==" + studentId);
+            if (ppdbOptions.get(optionIdx).getPpdbRegistrationList().get(iStd).get_id().equals(studentId)){
+                return iStd;
+            }
+        }
+        return -1;
+    }
+
 
 
 }

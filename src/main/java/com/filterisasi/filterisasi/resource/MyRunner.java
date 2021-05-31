@@ -48,9 +48,10 @@ public class MyRunner implements CommandLineRunner {
         this.initializationOutcast = new InitializationOutcast();
         this.findData = new FindData();
         this.transformData = new TransformData();
-        this.studentHistory = new StudentHistory(findData);
-        this.checkQuotaBalance = new CheckQuotaBalance(this.findData, this.studentHistory);
         this.updateData = new UpdateData();
+        this.studentHistory = new StudentHistory(findData, updateData);
+        this.checkQuotaBalance = new CheckQuotaBalance(this.findData, this.studentHistory, this.ppdbView);
+
 
     }
 
@@ -113,7 +114,7 @@ public class MyRunner implements CommandLineRunner {
         initializationOutcast.setOptionOutcast(ppdbOptions);
 
         //List<PpdbRegistration> ppdbRegistrations = ppdbRegistrationRepository.getByFirstChoice();
-        //ppdbView.displayOption(ppdbOptions);
+        ppdbView.displayOption(ppdbOptions);
         System.out.println("==============================================================");
         potongBerdasarkanQuota(ppdbOptions);
 
@@ -192,22 +193,64 @@ public class MyRunner implements CommandLineRunner {
                             acceptedOptionId = ppdbOptions.get(idxTargetOption).get_id();
                             acceptedOptionNo = 2;
                         }
+                        
 
-
-
-                        //update history pilihan pertama siswa yang akan dilempar
+                        //update history pilihan selanjutnya dari siswa yang akan dilempar
                         List<PpdbHistory> studentTargetOptionHistories = new ArrayList<>();
-                        int idxPilihanPertamaDariSiswa = findData.findIndexFromOptionsByChoice(students.get(iStd).getFirstChoice(), ppdbOptions);
-                        studentTargetOptionHistories.addAll(ppdbOptions.get(idxPilihanPertamaDariSiswa).getPpdbRegistrationHistories());
-                        int idxHistoryFirstOption = studentHistory.findIndexStudentHistoryById(studentTargetOptionHistories, students.get(iStd).get_id());
+                        idxTargetOption = findData.findIndexFromOptionsByChoice(acceptedOptionId, ppdbOptions);
+                        studentTargetOptionHistories.addAll(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories());
+                        int idxHistoryTargetOption = studentHistory.findIndexStudentHistoryById(studentTargetOptionHistories, students.get(iStd).get_id());
+
+                        if (idxHistoryTargetOption==-1){
+                            //add new
+
+                            PpdbHistory ppdbHistory = this.studentHistory.setStudentHistory(ppdbOptions, idxTargetOption,
+                                    students.get(iStd).get_id(),
+                                    students.get(iStd).getName(),
+                                    students.get(iStd).getSkorPeserta(),
+                                    students.get(iStd).getSkorJarak1(),
+                                    students.get(iStd).getFirstChoice(),
+                                    students.get(iStd).getSecondChoice(),
+                                    acceptedOptionId,
+                                    acceptedOptionNo
+                                    );
+                            studentTargetOptionHistories.add(ppdbHistory);
+
+                            int idxFirstOption = findData.findIndexFromOptionsByChoice(students.get(iStd).getFirstChoice(),ppdbOptions);
+                            this.studentHistory.addNewStudentHistory(ppdbOptions, students, iStd, acceptedOptionId, acceptedOptionNo, idxFirstOption);
+
+                            int idxSecondOption = findData.findIndexFromOptionsByChoice(students.get(iStd).getSecondChoice(),ppdbOptions);
+                            this.studentHistory.addNewStudentHistory(ppdbOptions, students, iStd, acceptedOptionId, acceptedOptionNo, idxSecondOption);
+
+                            int idxLastOption = ppdbOptions.size()-1;
+                            //int idxStudentHistoryLastOption = studentHistory.findIndexStudentHistoryByIdAndByOption(ppdbOptions, idxLastOption, students.get(iStd).get_id());
+                            this.studentHistory.addNewStudentHistory(ppdbOptions, students, iStd, acceptedOptionId, acceptedOptionNo, idxLastOption);
 
 
-                        PpdbHistory updateHistoryDariSiswaYgTerlempar = this.updateData.updateStudent(
-                                ppdbOptions, idxPilihanPertamaDariSiswa,
-                                idxHistoryFirstOption,
+                        }else{
+
+                            int idxFirstOption = findData.findIndexFromOptionsByChoice(students.get(iStd).getFirstChoice(),ppdbOptions);
+                            this.studentHistory.addNewStudentHistory(ppdbOptions, students, iStd, acceptedOptionId, acceptedOptionNo, idxFirstOption);
+
+
+                            int idxSecondOption = findData.findIndexFromOptionsByChoice(students.get(iStd).getSecondChoice(),ppdbOptions);
+                            this.studentHistory.addNewStudentHistory(ppdbOptions, students, iStd, acceptedOptionId, acceptedOptionNo, idxSecondOption);
+
+                            int idxLastOption = ppdbOptions.size()-1;
+                            this.studentHistory.addNewStudentHistory(ppdbOptions, students, iStd, acceptedOptionId, acceptedOptionNo, idxLastOption);
+
+
+                            PpdbHistory  updateHistoryDariSiswaYgTerlempar = this.updateData.updateStudent(
+                                ppdbOptions, idxTargetOption,
+                                idxHistoryTargetOption,
                                 acceptedOptionId, acceptedOptionNo);
-                        studentTargetOptionHistories.set(idxHistoryFirstOption, updateHistoryDariSiswaYgTerlempar);
-                        ppdbOptions.get(idxPilihanPertamaDariSiswa).setPpdbRegistrationHistories(studentTargetOptionHistories);
+                                studentTargetOptionHistories.set(idxHistoryTargetOption, updateHistoryDariSiswaYgTerlempar);
+
+
+
+                        }
+
+                        ppdbOptions.get(idxTargetOption).setPpdbRegistrationHistories(studentTargetOptionHistories);
 
                         ppdbOptions.get(idxTargetOption).getPpdbRegistrationList().add(students.get(iStd)); //tambahkan siswa ke sekolah pilihan selanjutnya
 
@@ -264,7 +307,8 @@ public class MyRunner implements CommandLineRunner {
                 ) {
                     potongBerdasarkanQuota(ppdbOptions);
                     break;
-                }*/
+                } */
+
                 if (
                         ppdbOptions.get(iOpt).isNeedFilter() == true
                 ) {

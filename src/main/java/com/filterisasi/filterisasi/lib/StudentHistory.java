@@ -11,8 +11,10 @@ import java.util.stream.Stream;
 public class StudentHistory {
     private PpdbHistory historyTarget;
     private FindData findData;
-    public StudentHistory(FindData findData) {
+    private UpdateData updateData;
+    public StudentHistory(FindData findData, UpdateData updateData) {
         this.findData = findData;
+        this.updateData = updateData;
     }
 
     public void addOrUpdateHistoryStudentAllOptions2(List<PpdbOption> ppdbOptions, int idxTargetOption, int idxStudentTargetHistory) {
@@ -176,6 +178,15 @@ public class StudentHistory {
         return -1;
     }
 
+    public int findIndexStudentHistoryByIdAndByOption(List<PpdbOption> ppdbOptions, int idxOption, ObjectId studentId){
+        for (int iStd = 0; iStd <ppdbOptions.get(idxOption).getPpdbRegistrationHistories().size(); iStd++) {
+            if (ppdbOptions.get(idxOption).getPpdbRegistrationHistories().get(iStd).get_id().equals(studentId)){
+                return iStd;
+            }
+        }
+        return -1;
+    }
+
     public void removeStudentHistory(){
 
     }
@@ -202,6 +213,78 @@ public class StudentHistory {
                 ()
                         -> { System.out.println(
                         "Value is empty"); });
+    }
+
+    public PpdbHistory setStudentHistory(List<PpdbOption> ppdbOptions, int idxTargetOption,
+                                     ObjectId studentId, String studentName, double skorPeserta,
+                                     double skorJarak1,
+                                     ObjectId firstChoice, ObjectId secondChoice,
+                                     ObjectId acceptedId, int acceptedNo){
+        historyTarget = new PpdbHistory();
+        historyTarget.setAcceptedOptionId(acceptedId);
+        historyTarget.setAcceptedOptionNo(acceptedNo);
+        historyTarget.setFirstChoice(firstChoice);
+        historyTarget.setSecondChoice(secondChoice);
+        historyTarget.set_id(studentId);
+        historyTarget.setName(studentName);
+        historyTarget.setSkorPeserta(skorPeserta);
+        historyTarget.setSkorJarak1(skorJarak1);
+        historyTarget.setStudentExist(true);
+        return historyTarget;
+    }
+
+    public void addNewStudentHistory(List<PpdbOption> ppdbOptions,List<PpdbRegistration> students, int iStd,
+                                     ObjectId acceptedOptionId, int acceptedOptionNo, int idxTargetOption
+                                     ){
+
+        int idxStudentHistorySecondOption = findIndexStudentHistoryByIdAndByOption(ppdbOptions, idxTargetOption, students.get(iStd).get_id());
+
+        if (idxStudentHistorySecondOption==-1){
+
+            PpdbHistory ppdbHistory = setStudentHistory(ppdbOptions, idxStudentHistorySecondOption,
+                    students.get(iStd).get_id(),
+                    students.get(iStd).getName(),
+                    students.get(iStd).getSkorPeserta(),
+                    students.get(iStd).getSkorJarak1(),
+                    students.get(iStd).getFirstChoice(),
+                    students.get(iStd).getSecondChoice(),
+                    acceptedOptionId,
+                    acceptedOptionNo
+            );
+            ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().add(ppdbHistory);
+        }else{
+            PpdbHistory  updateHistoryDariSiswaYgTerlempar2 = this.updateData.updateStudent(
+                    ppdbOptions, idxTargetOption,
+                    idxStudentHistorySecondOption,
+                    acceptedOptionId, acceptedOptionNo);
+            ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().set(idxStudentHistorySecondOption, updateHistoryDariSiswaYgTerlempar2);
+        }
+    }
+
+    public void pullStudentHistory(List<PpdbOption> ppdbOptions,List<PpdbRegistration> students, int iStd,
+                                     ObjectId acceptedOptionId, int acceptedOptionNo, int idxTargetOption
+    ){
+
+        int idxStudentHistoryTargetOption = findIndexStudentHistoryByIdAndByOption(ppdbOptions, idxTargetOption, students.get(iStd).get_id());
+        if (idxStudentHistoryTargetOption==-1){
+            PpdbHistory ppdbHistory = setStudentHistory(ppdbOptions, idxStudentHistoryTargetOption,
+                    students.get(iStd).get_id(),
+                    students.get(iStd).getName(),
+                    students.get(iStd).getSkorPeserta(),
+                    students.get(iStd).getSkorJarak1(),
+                    students.get(iStd).getFirstChoice(),
+                    students.get(iStd).getSecondChoice(),
+                    acceptedOptionId,
+                    acceptedOptionNo
+            );
+            ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().add(ppdbHistory);
+        }else{
+            PpdbHistory updateHistoryDariSiswaYgTerlempar = this.updateData.updateHistoryStudent(
+                    ppdbOptions, idxTargetOption,
+                    idxStudentHistoryTargetOption,
+                    acceptedOptionId, acceptedOptionNo);
+            ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().set(idxStudentHistoryTargetOption, updateHistoryDariSiswaYgTerlempar);
+        }
     }
 
 

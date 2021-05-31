@@ -55,4 +55,16 @@ public class PpdbView {
 
     }
 
+    public void displayOptionByIdx(List<PpdbOption> ppdbOptions, int iOpt){
+
+            System.out.println("view-ppdbOption:" + iOpt + "-" + ppdbOptions.get(iOpt).get_id()  + " - " +
+                    ppdbOptions.get(iOpt).getName() +  " - " +
+                    ppdbOptions.get(iOpt).getPpdb_schools().get_Id() +
+                    " # P:" + ppdbOptions.get(iOpt).getPpdbRegistrationList().size() +
+                    " # Q:" + ppdbOptions.get(iOpt).getQuota()
+            );
+            this.displayStudent(ppdbOptions, iOpt);
+
+    }
+
 }

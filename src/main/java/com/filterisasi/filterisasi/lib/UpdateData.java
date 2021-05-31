@@ -47,4 +47,21 @@ public class UpdateData {
         return historyTarget;
     }
 
+    public PpdbHistory updateHistoryStudent(List<PpdbOption> ppdbOptions, int idxOptionTargetChoice, int idxCurStudent,
+                                     ObjectId acceptedOptionId, int acceptedOptionNo
+
+    ){
+
+        PpdbHistory historyTarget = new PpdbHistory();
+        historyTarget.setAcceptedOptionId(acceptedOptionId);
+        historyTarget.setAcceptedOptionNo(acceptedOptionNo);
+        historyTarget.setFirstChoice(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getFirstChoice());
+        historyTarget.setSecondChoice(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSecondChoice());
+        historyTarget.set_id(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).get_id());
+        historyTarget.setName(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getName());
+        historyTarget.setSkorPeserta(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSkorPeserta());
+        historyTarget.setSkorJarak1(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSkorJarak1());
+        return historyTarget;
+    }
+
 }
