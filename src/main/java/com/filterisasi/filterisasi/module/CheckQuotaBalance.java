@@ -92,7 +92,7 @@ public class CheckQuotaBalance {
                     int idxStudentTarik = -1;
 
                     //cari siswa yg ada di history student, tapi tidak ada di registration
-                    ppdbView.displayOption(ppdbOptions);
+                    //ppdbView.displayOption(ppdbOptions);
                     if (ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionId()!=ppdbOptions.get(iOpt).get_id()){
                         System.out.println(
                                 " sekolahYgAkanTarikSiswa:" + ppdbOptions.get(iOpt).get_id() + " "  + ppdbOptions.get(iOpt).getName()
@@ -102,7 +102,7 @@ public class CheckQuotaBalance {
                                 " optionIdFromSource:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionId() +
                                 " optionNoFromSource:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo());
 
-                        if (ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo()!=0){
+                        //if (ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionNo()!=0){
 
                         ObjectId histAcceptedOptionId = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iOriStd).getAcceptedOptionId();
                         idxOptionTarik = findData.findIndexFromOptionsByChoice(histAcceptedOptionId, ppdbOptions);
@@ -177,7 +177,7 @@ public class CheckQuotaBalance {
                                 //ppdbView.displayOptionByIdx(ppdbOptions, idxOptionTarik);
                                 //ppdbView.displayOptionByIdx(ppdbOptions, iOpt);
                             }
-                        }
+                        //}
 
                     }
 
