@@ -262,10 +262,11 @@ public class StudentHistory {
     }
 
     public void pullStudentHistory(List<PpdbOption> ppdbOptions,List<PpdbRegistration> students, int iStd,
-                                     ObjectId acceptedOptionId, int acceptedOptionNo, int idxTargetOption
+                                     ObjectId acceptedOptionId, int acceptedOptionNo, int idxTargetOption, int idxOptionTarik
     ){
 
-        int idxStudentHistoryTargetOption = findIndexStudentHistoryByIdAndByOption(ppdbOptions, idxTargetOption, students.get(iStd).get_id());
+
+        int idxStudentHistoryTargetOption = findIndexStudentHistoryByIdAndByOption(ppdbOptions, idxTargetOption, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(iStd).get_id());
         if (idxStudentHistoryTargetOption==-1){
             PpdbHistory ppdbHistory = setStudentHistory(ppdbOptions, idxStudentHistoryTargetOption,
                     students.get(iStd).get_id(),

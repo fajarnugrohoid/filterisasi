@@ -114,7 +114,7 @@ public class MyRunner implements CommandLineRunner {
         initializationOutcast.setOptionOutcast(ppdbOptions);
 
         //List<PpdbRegistration> ppdbRegistrations = ppdbRegistrationRepository.getByFirstChoice();
-        ppdbView.displayOption(ppdbOptions);
+        //ppdbView.displayOption(ppdbOptions);
         System.out.println("==============================================================");
         potongBerdasarkanQuota(ppdbOptions);
 
@@ -246,8 +246,6 @@ public class MyRunner implements CommandLineRunner {
                                 acceptedOptionId, acceptedOptionNo);
                                 studentTargetOptionHistories.set(idxHistoryTargetOption, updateHistoryDariSiswaYgTerlempar);
 
-
-
                         }
 
                         ppdbOptions.get(idxTargetOption).setPpdbRegistrationHistories(studentTargetOptionHistories);
@@ -295,7 +293,7 @@ public class MyRunner implements CommandLineRunner {
                     optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), "perpindahan", ppdbOptions);
                 }
 
-                /*
+
                 int sisaQuota = ppdbOptions.get(optTargetIdx).getQuota() - ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
                 if (
                         ( ppdbOptions.get(iOpt).isNeedFilter() == true )
@@ -307,14 +305,15 @@ public class MyRunner implements CommandLineRunner {
                 ) {
                     potongBerdasarkanQuota(ppdbOptions);
                     break;
-                } */
+                }
 
+                /*
                 if (
                         ppdbOptions.get(iOpt).isNeedFilter() == true
                 ) {
                     potongBerdasarkanQuota(ppdbOptions);
                     break;
-                }
+                } */
 
             }
         }
