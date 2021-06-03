@@ -29,10 +29,16 @@ public class PpdbHistory {
     @Field("second_choice")
     private ObjectId secondChoice;
 
+    @Field("third_choice")
+    private ObjectId thirdChoice;
+
     private String scoreJarak1;
 
     private String scoreJarak2;
-    private String swastaChoice;
+
+    @Field("priority")
+    private int priority;
+
     private String age;
     private String un;
     private String name;
@@ -43,7 +49,7 @@ public class PpdbHistory {
     private String codeType;
     private ObjectId firstChoiceSchool;
     private ObjectId secondChoiceSchool;
-    private ObjectId swastaChoiceSchool;
+    private ObjectId thirdChoiceSchool;
     private int statusSeleksi;
 
     @Field("score_jarak_1")
@@ -65,7 +71,7 @@ public class PpdbHistory {
 
     public PpdbHistory(ObjectId _id, String jenjangPendaftaran, String caraPendaftaran,
                        String levelPendaftaran, ObjectId firstChoice, String scoreJarak1,
-                       ObjectId secondChoice, String scoreJarak2, String swastaChoice,
+                       ObjectId secondChoice, String scoreJarak2,
                        String age, String un, String name, String npsn, boolean approved,
                        String codeSchool, String schoolLevel, String codeType,
                        ObjectId firstChoiceSchool, ObjectId secondChoiceSchool,
@@ -81,10 +87,9 @@ public class PpdbHistory {
         this.caraPendaftaran = caraPendaftaran;
         this.levelPendaftaran = levelPendaftaran;
         this.firstChoice = firstChoice;
-        this.scoreJarak1 = scoreJarak1;
         this.secondChoice = secondChoice;
+        this.scoreJarak1 = scoreJarak1;
         this.scoreJarak2 = scoreJarak2;
-        this.swastaChoice = swastaChoice;
         this.age = age;
         this.un = un;
         this.name = name;
@@ -95,7 +100,6 @@ public class PpdbHistory {
         this.codeType = codeType;
         this.firstChoiceSchool = firstChoiceSchool;
         this.secondChoiceSchool = secondChoiceSchool;
-        this.swastaChoiceSchool = swastaChoiceSchool;
         this.statusSeleksi = statusSeleksi;
         this.skorJarak1 = skorJarak1;
         this.skorPeserta = skorPeserta;
@@ -161,20 +165,20 @@ public class PpdbHistory {
         this.secondChoice = secondChoice;
     }
 
+    public ObjectId getThirdChoice() {
+        return thirdChoice;
+    }
+
+    public void setThirdChoice(ObjectId thirdChoice) {
+        this.thirdChoice = thirdChoice;
+    }
+
     public String getScoreJarak2() {
         return scoreJarak2;
     }
 
     public void setScoreJarak2(String scoreJarak2) {
         this.scoreJarak2 = scoreJarak2;
-    }
-
-    public String getSwastaChoice() {
-        return swastaChoice;
-    }
-
-    public void setSwastaChoice(String swastaChoice) {
-        this.swastaChoice = swastaChoice;
     }
 
     public String getAge() {
@@ -257,12 +261,12 @@ public class PpdbHistory {
         this.secondChoiceSchool = secondChoiceSchool;
     }
 
-    public ObjectId getSwastaChoiceSchool() {
-        return swastaChoiceSchool;
+    public ObjectId getThirdChoiceSchool() {
+        return thirdChoiceSchool;
     }
 
-    public void setSwastaChoiceSchool(ObjectId swastaChoiceSchool) {
-        this.swastaChoiceSchool = swastaChoiceSchool;
+    public void setThirdChoiceSchool(ObjectId thirdChoiceSchool) {
+        this.thirdChoiceSchool = thirdChoiceSchool;
     }
 
     public int getStatusSeleksi() {
@@ -288,6 +292,15 @@ public class PpdbHistory {
     public void setSkorPeserta(Double skorPeserta) {
         this.skorPeserta = skorPeserta;
     }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
 
     public List<ObjectId> getOptionHistories() {
         return optionHistories;

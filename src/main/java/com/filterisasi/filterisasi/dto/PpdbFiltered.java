@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "ppdb_test_filtereds")
+@Document(collection = "ppdb_filtereds_test")
 public class PpdbFiltered {
 
     @Id
@@ -20,8 +20,12 @@ public class PpdbFiltered {
     @Field("school_id")
     private ObjectId schoolId;
 
-    private String level;
-    private String type;
+    @Field("level")
+    private String level; //senior or vocational
+
+    @Field("type")
+    private String type; //jalur
+
     private ObjectId penetepanOptionId;
 
     public PpdbFiltered() {

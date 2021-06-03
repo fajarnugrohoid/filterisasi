@@ -1,13 +1,21 @@
 package com.filterisasi.filterisasi.utility;
 
+import com.filterisasi.filterisasi.dto.PpdbFiltered;
 import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbRegistration;
 import com.filterisasi.filterisasi.model.PpdbHistory;
+import com.filterisasi.filterisasi.repository.PpdbFilteredRepository;
+import com.filterisasi.filterisasi.repository.PpdbOptionLookupSchoolRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PpdbView {
+
+
+
     public PpdbView() {
+
     }
 
     public void displayOption(List<PpdbOption> ppdbOptions){
@@ -30,7 +38,11 @@ public class PpdbView {
                 System.out.println("ppdbRegistrations:" + std + "-" + ppdbRegistrations.get(std).get_id() + " - " +
                         ppdbRegistrations.get(std).getName() + " - " +
                         ppdbRegistrations.get(std).getSkorPeserta() + " - " +
-                        ppdbRegistrations.get(std).getSkorJarak1() + " - " + ppdbRegistrations.get(std).getAcceptedOptionNo());
+                        ppdbRegistrations.get(std).getSkorJarak1() + " - " +
+                        ppdbRegistrations.get(std).getAcceptedOptionNo() + " " +
+                        ppdbRegistrations.get(std).getCaraPendaftaran() + " " +
+                        ppdbRegistrations.get(std).getLevelPendaftaran() + " "
+                );
             }
 
             /*
@@ -66,5 +78,7 @@ public class PpdbView {
             this.displayStudent(ppdbOptions, iOpt);
 
     }
+
+
 
 }

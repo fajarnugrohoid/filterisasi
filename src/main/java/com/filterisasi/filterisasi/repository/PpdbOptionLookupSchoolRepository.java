@@ -9,6 +9,8 @@ import java.util.List;
 public interface PpdbOptionLookupSchoolRepository {
 
     List<PpdbOption> lookupPpdbOptionPpdbSchool();
+
     List<PpdbOption> lookupPpdbOptionPpdbSchoolByJalur(String jalurs[]);
 
+    int updateQuotaPpdbOption(List<PpdbOption> ppdbOptions);
 }

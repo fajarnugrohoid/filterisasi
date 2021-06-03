@@ -12,7 +12,7 @@ public class FindData {
     }
 
 
-    public int findIndexFromOptionsByChoice(ObjectId nextChoice, List<PpdbOption> ppdbOptions) {
+    public int findIdxFromOptionsByChoiceId(ObjectId nextChoice, List<PpdbOption> ppdbOptions) {
 
         for (int iOpt = 0; iOpt <ppdbOptions.size() ; iOpt++) {
             if (ppdbOptions.get(iOpt).get_id().equals(nextChoice)) {
@@ -47,7 +47,7 @@ public class FindData {
         return -1;
     }
 
-    public int findIndexFromStudentsByIdandOption(List<PpdbOption> ppdbOptions, int optionIdx, ObjectId studentId){
+    public int findIdxFromRegistStudentsByStdIdandOptIdx(List<PpdbOption> ppdbOptions, int optionIdx, ObjectId studentId){
 
         for (int iStd = 0; iStd <ppdbOptions.get(optionIdx).getPpdbRegistrationList().size() ; iStd++) {
             //System.out.println("findStudentIdxById:" + ppdbRegistrations.get(iStd).get_id() + "==" + studentId);

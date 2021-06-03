@@ -25,6 +25,9 @@ public class PpdbOption {
     @org.springframework.lang.Nullable
     private int quota = 0;
 
+    @Field("quota")
+    private int oldQuota = 0;
+
     @org.springframework.lang.Nullable
     private int quota_foreigner = 0;
 
@@ -55,7 +58,7 @@ public class PpdbOption {
     public PpdbOption() {
     }
 
-    public PpdbOption(ObjectId _id, String name, String type, int rombel, int quota,
+    public PpdbOption(ObjectId _id, String name, String type, int rombel, int quota, int oldQuota,
                       int quota_foreigner, int total_quota, ObjectId schoolId,
                       List<PpdbRegistration> ppdbRegistrationList,
                       PpdbSchool ppdb_schools,
@@ -67,6 +70,7 @@ public class PpdbOption {
         this.type = type;
         this.rombel = rombel;
         this.quota = quota;
+        this.oldQuota = oldQuota;
         this.quota_foreigner = quota_foreigner;
         this.total_quota = total_quota;
         this.schoolId = schoolId;
@@ -119,6 +123,14 @@ public class PpdbOption {
 
     public void setQuota(int quota) {
         this.quota = quota;
+    }
+
+    public int getOldQuota() {
+        return oldQuota;
+    }
+
+    public void setOldQuota(int oldQuota) {
+        this.oldQuota = oldQuota;
     }
 
     public int getQuota_foreigner() {

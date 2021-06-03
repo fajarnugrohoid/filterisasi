@@ -29,10 +29,16 @@ public class PpdbRegistration {
     @Field("second_choice")
     private ObjectId secondChoice;
 
+    @Field("third_choice")
+    private ObjectId thirdChoice;
+
     private String scoreJarak1;
 
     private String scoreJarak2;
-    private String swastaChoice;
+
+    @Field("priority")
+    private int priority;
+
     private String age;
     private String un;
     private String name;
@@ -43,6 +49,7 @@ public class PpdbRegistration {
     private String codeType;
     private ObjectId firstChoiceSchool;
     private ObjectId secondChoiceSchool;
+    private ObjectId thirdChoiceSchool;
     private ObjectId swastaChoiceSchool;
     private int statusSeleksi;
 
@@ -54,9 +61,11 @@ public class PpdbRegistration {
 
     private int acceptedOptionNo = 0; //status saat ini diterima disekolah mana
 
-    private List<ObjectId> optionHistories = new ArrayList<>();
-
     private ObjectId acceptedOptionId;
+
+    private ObjectId acceptedSchoolId;
+
+    private List<ObjectId> optionHistories = new ArrayList<>();
 
     private boolean studentExist;
 
@@ -65,7 +74,7 @@ public class PpdbRegistration {
 
     public PpdbRegistration(ObjectId _id, String jenjangPendaftaran, String caraPendaftaran,
                             String levelPendaftaran, ObjectId firstChoice, String scoreJarak1,
-                            ObjectId secondChoice, String scoreJarak2, String swastaChoice,
+                            ObjectId secondChoice, String scoreJarak2,
                             String age, String un, String name, String npsn, boolean approved,
                             String codeSchool, String schoolLevel, String codeType,
                             ObjectId firstChoiceSchool, ObjectId secondChoiceSchool,
@@ -84,7 +93,6 @@ public class PpdbRegistration {
         this.scoreJarak1 = scoreJarak1;
         this.secondChoice = secondChoice;
         this.scoreJarak2 = scoreJarak2;
-        this.swastaChoice = swastaChoice;
         this.age = age;
         this.un = un;
         this.name = name;
@@ -103,6 +111,8 @@ public class PpdbRegistration {
         this.optionHistories = optionHistories;
         this.acceptedOptionId = acceptedOptionId;
         this.studentExist = studentExist;
+
+
     }
 
     public ObjectId get_id() {
@@ -167,14 +177,6 @@ public class PpdbRegistration {
 
     public void setScoreJarak2(String scoreJarak2) {
         this.scoreJarak2 = scoreJarak2;
-    }
-
-    public String getSwastaChoice() {
-        return swastaChoice;
-    }
-
-    public void setSwastaChoice(String swastaChoice) {
-        this.swastaChoice = swastaChoice;
     }
 
     public String getAge() {
@@ -289,12 +291,12 @@ public class PpdbRegistration {
         this.skorPeserta = skorPeserta;
     }
 
-    public List<ObjectId> getOptionHistories() {
-        return optionHistories;
+    public int getPriority() {
+        return priority;
     }
 
-    public void setOptionHistories(List<ObjectId> optionHistories) {
-        this.optionHistories = optionHistories;
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public int getAcceptedOptionNo() {
@@ -313,9 +315,42 @@ public class PpdbRegistration {
         this.acceptedOptionId = acceptedOptionId;
     }
 
+    public ObjectId getThirdChoice() {
+        return thirdChoice;
+    }
+
+    public void setThirdChoice(ObjectId thirdChoice) {
+        this.thirdChoice = thirdChoice;
+    }
+
+    public ObjectId getThirdChoiceSchool() {
+        return thirdChoiceSchool;
+    }
+
+    public void setThirdChoiceSchool(ObjectId thirdChoiceSchool) {
+        this.thirdChoiceSchool = thirdChoiceSchool;
+    }
+
+    public ObjectId getAcceptedSchoolId() {
+        return acceptedSchoolId;
+    }
+
+    public void setAcceptedSchoolId(ObjectId acceptedSchoolId) {
+        this.acceptedSchoolId = acceptedSchoolId;
+    }
+
+    public List<ObjectId> getOptionHistories() {
+        return optionHistories;
+    }
+
+    public void setOptionHistories(List<ObjectId> optionHistories) {
+        this.optionHistories = optionHistories;
+    }
+
     public boolean isStudentExist() {
         return studentExist;
     }
+
 
     public void setStudentExist(boolean studentExist) {
         this.studentExist = studentExist;

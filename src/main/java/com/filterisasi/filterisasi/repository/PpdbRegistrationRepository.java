@@ -13,4 +13,6 @@ public interface PpdbRegistrationRepository  {
 
     List<PpdbRegistration> getByFirstChoice(ObjectId firstChoice);
 
+    int updateAcceptedStudent(List<PpdbOption> ppdbOptions, int optIdx);
+
 }

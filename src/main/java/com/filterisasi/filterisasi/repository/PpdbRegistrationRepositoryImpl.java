@@ -2,11 +2,13 @@ package com.filterisasi.filterisasi.repository;
 
 import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbRegistration;
+import com.mongodb.bulk.BulkWriteResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
@@ -14,6 +16,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationOperationCon
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -53,6 +56,19 @@ public class PpdbRegistrationRepositoryImpl implements PpdbRegistrationRepositor
 
         return mongoTemplate.find(query, PpdbRegistration.class);
 
+    }
+
+    @Override
+    public int updateAcceptedStudent(List<PpdbOption> ppdbOptions, int optIdx) {
+        BulkOperations ops = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, PpdbRegistration.class);
+        for (int stdIdx = 0; stdIdx <ppdbOptions.get(optIdx).getPpdbRegistrationList().size() ; stdIdx++) {
+            Update update = new Update();
+            update.set("accepted_choice_no", ppdbOptions.get(optIdx).getPpdbRegistrationList().get(stdIdx).getAcceptedOptionNo());
+            update.set("accepted_choice_id", ppdbOptions.get(optIdx).getPpdbRegistrationList().get(stdIdx).getAcceptedOptionId());
+            ops.updateOne(Query.query(where("_id").is(ppdbOptions.get(optIdx).getPpdbRegistrationList().get(stdIdx).get_id())), update);
+        }
+        BulkWriteResult x = ops.execute();
+        return x.getModifiedCount();
     }
 
 }

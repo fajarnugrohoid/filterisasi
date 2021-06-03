@@ -43,12 +43,12 @@ public class StudentHistory {
 
         addOrUpdateHistoryStudent2(ppdbOptions, idxTargetOption, idxStudentTargetHistory, historyTarget);
 
-        int idxTargetOption1 = findData.findIndexFromOptionsByChoice(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getFirstChoice(),ppdbOptions);
+        int idxTargetOption1 = findData.findIdxFromOptionsByChoiceId(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getFirstChoice(),ppdbOptions);
         if (idxTargetOption1!=-1){
             addOrUpdateHistoryStudent2(ppdbOptions, idxTargetOption1, idxStudentTargetHistory, updateHistoryOtherTarget2);
         }
 
-        int idxTargetOption2 = findData.findIndexFromOptionsByChoice(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getSecondChoice(),ppdbOptions);
+        int idxTargetOption2 = findData.findIdxFromOptionsByChoiceId(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getSecondChoice(),ppdbOptions);
         if (idxTargetOption2!=-1){
             addOrUpdateHistoryStudent2(ppdbOptions, idxTargetOption2, idxStudentTargetHistory, updateHistoryOtherTarget2);
         }
@@ -114,12 +114,12 @@ public class StudentHistory {
         addOrUpdateHistoryStudent1(ppdbOptions, idxTargetOption, actOption, actStudent, historyTarget);
 
 
-        int idxTargetOption1 = findData.findIndexFromOptionsByChoice(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getFirstChoice(),ppdbOptions);
+        int idxTargetOption1 = findData.findIdxFromOptionsByChoiceId(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getFirstChoice(),ppdbOptions);
         if (idxTargetOption1!=-1){
             addOrUpdateHistoryStudent1(ppdbOptions, idxTargetOption1, actOption, actStudent, updateHistoryOtherTarget);
         }
 
-        int idxTargetOption2 = findData.findIndexFromOptionsByChoice(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getSecondChoice(),ppdbOptions);
+        int idxTargetOption2 = findData.findIdxFromOptionsByChoiceId(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getSecondChoice(),ppdbOptions);
         if (idxTargetOption2!=-1){
             addOrUpdateHistoryStudent1(ppdbOptions, idxTargetOption2, actOption, actStudent, updateHistoryOtherTarget);
         }
@@ -178,9 +178,9 @@ public class StudentHistory {
         return -1;
     }
 
-    public int findIndexStudentHistoryByIdAndByOption(List<PpdbOption> ppdbOptions, int idxOption, ObjectId studentId){
-        for (int iStd = 0; iStd <ppdbOptions.get(idxOption).getPpdbRegistrationHistories().size(); iStd++) {
-            if (ppdbOptions.get(idxOption).getPpdbRegistrationHistories().get(iStd).get_id().equals(studentId)){
+    public int findIdxStudentHistoryByStdIdAndOptId(List<PpdbOption> ppdbOptions, int optionIdx, ObjectId studentId){
+        for (int iStd = 0; iStd <ppdbOptions.get(optionIdx).getPpdbRegistrationHistories().size(); iStd++) {
+            if (ppdbOptions.get(optionIdx).getPpdbRegistrationHistories().get(iStd).get_id().equals(studentId)){
                 return iStd;
             }
         }
@@ -215,7 +215,7 @@ public class StudentHistory {
                         "Value is empty"); });
     }
 
-    public PpdbHistory setStudentHistory(List<PpdbOption> ppdbOptions, int idxTargetOption,
+    public PpdbHistory setStudentHistory(
                                      ObjectId studentId, String studentName, double skorPeserta,
                                      double skorJarak1,
                                      ObjectId firstChoice, ObjectId secondChoice,
@@ -233,15 +233,15 @@ public class StudentHistory {
         return historyTarget;
     }
 
-    public void addNewStudentHistory(List<PpdbOption> ppdbOptions,List<PpdbRegistration> students, int iStd,
+    public void addNewOrUpdateStudentHistory(List<PpdbOption> ppdbOptions,List<PpdbRegistration> students, int iStd,
                                      ObjectId acceptedOptionId, int acceptedOptionNo, int idxTargetOption
                                      ){
 
-        int idxStudentHistorySecondOption = findIndexStudentHistoryByIdAndByOption(ppdbOptions, idxTargetOption, students.get(iStd).get_id());
+        int historyStudentIdx = findIdxStudentHistoryByStdIdAndOptId(ppdbOptions, idxTargetOption, students.get(iStd).get_id());
 
-        if (idxStudentHistorySecondOption==-1){
+        if (historyStudentIdx==-1){
 
-            PpdbHistory ppdbHistory = setStudentHistory(ppdbOptions, idxStudentHistorySecondOption,
+            PpdbHistory ppdbHistory = setStudentHistory(
                     students.get(iStd).get_id(),
                     students.get(iStd).getName(),
                     students.get(iStd).getSkorPeserta(),
@@ -253,11 +253,11 @@ public class StudentHistory {
             );
             ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().add(ppdbHistory);
         }else{
-            PpdbHistory  updateHistoryDariSiswaYgTerlempar2 = this.updateData.updateStudent(
+            PpdbHistory updateHistoryStudent = this.updateData.updateStudent(
                     ppdbOptions, idxTargetOption,
-                    idxStudentHistorySecondOption,
+                    historyStudentIdx,
                     acceptedOptionId, acceptedOptionNo);
-            ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().set(idxStudentHistorySecondOption, updateHistoryDariSiswaYgTerlempar2);
+            ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().set(historyStudentIdx, updateHistoryStudent);
         }
     }
 
@@ -265,10 +265,9 @@ public class StudentHistory {
                                      ObjectId acceptedOptionId, int acceptedOptionNo, int idxTargetOption, int idxOptionTarik
     ){
 
-
-        int idxStudentHistoryTargetOption = findIndexStudentHistoryByIdAndByOption(ppdbOptions, idxTargetOption, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(iStd).get_id());
+        int idxStudentHistoryTargetOption = findIdxStudentHistoryByStdIdAndOptId(ppdbOptions, idxTargetOption, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(iStd).get_id());
         if (idxStudentHistoryTargetOption==-1){
-            PpdbHistory ppdbHistory = setStudentHistory(ppdbOptions, idxStudentHistoryTargetOption,
+            PpdbHistory ppdbHistory = setStudentHistory(
                     students.get(iStd).get_id(),
                     students.get(iStd).getName(),
                     students.get(iStd).getSkorPeserta(),

@@ -2,16 +2,23 @@ package com.filterisasi.filterisasi.repository;
 
 import com.filterisasi.filterisasi.dto.PpdbOption;
 import com.filterisasi.filterisasi.dto.PpdbSchool;
+import com.mongodb.BasicDBObject;
+import com.mongodb.bulk.BulkWriteResult;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperationContext;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 @Service
@@ -148,6 +156,46 @@ public class PpdbOptionLookupSchoolRepositoryImpl implements PpdbOptionLookupSch
         List<PpdbOption> results = mongoTemplate.aggregate(aggregation, mongoTemplate.getCollectionName(PpdbOption.class), PpdbOption.class).getMappedResults();
 
         return results;
+    }
+
+    @Override
+    public int updateQuotaPpdbOption(List<PpdbOption> ppdbOptions) {
+        BulkOperations ops = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, PpdbOption.class);
+        for (PpdbOption ppdbOption : ppdbOptions) {
+            Update update = new Update();
+            update.set("quota", ppdbOption.getQuota());
+            update.set("old_quota", ppdbOption.getOldQuota());
+            ops.updateOne(Query.query(where("_id").is(ppdbOption.get_id())), update);
+        }
+        BulkWriteResult x = ops.execute();
+        return x.getModifiedCount();
+
+        /*
+        MongoCollection collection = mongoTemplate.getCollection("collection");
+        BulkOperations bulk = ;
+
+        bulk.find(new BasicDBObject("status","D"))
+                .update(new BasicDBObject(
+                        new BasicDBObject(
+                                "$set",new BasicDBObject(
+                                "status", "I"
+                        ).append(
+                                "points", 0
+                        )
+                        )
+                ));
+
+        bulk.find(new BasicDBObject("item",null))
+                .update(new BasicDBObject(
+                        new BasicDBObject(
+                                "$set", new BasicDBObject("item","TBD")
+                        )
+                ));
+
+
+        BulkWriteResult writeResult = bulk.execute();
+        System.out.println(writeResult); */
+
     }
 
 }
