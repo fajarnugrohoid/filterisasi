@@ -22,10 +22,10 @@ public class PpdbOption {
     @org.springframework.lang.Nullable
     private int rombel = 0;
 
-    @org.springframework.lang.Nullable
+    @Field("quota")
     private int quota = 0;
 
-    @Field("quota")
+    @Field("old_quota")
     private int oldQuota = 0;
 
     @org.springframework.lang.Nullable

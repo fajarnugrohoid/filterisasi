@@ -11,19 +11,19 @@ import org.bson.types.ObjectId;
 import java.util.Collections;
 import java.util.List;
 
-public class CheckQuotaBalance {
+public class CheckQuotaBalanceTargetMoreThanOne {
     private FindData findData;
     private StudentHistory studentHistory;
     private PpdbView ppdbView;
-    public CheckQuotaBalance(FindData findData, StudentHistory studentHistory, PpdbView ppdbView) {
+    public CheckQuotaBalanceTargetMoreThanOne(FindData findData, StudentHistory studentHistory, PpdbView ppdbView) {
         this.findData = findData;
         this.studentHistory = studentHistory;
         this.ppdbView = ppdbView;
     }
 
-    public void transferQuotaBalance(List<PpdbOption> ppdbOptions, int iOpt, int optTargetIdx){
+    public void transferQuotaBalance(List<PpdbOption> ppdbOptions, int iOpt, int optTargetIdx, int optTargetIdx2){
 
-
+        System.out.println("optTargetIdx:" + optTargetIdx);
         int sisaQuota = ppdbOptions.get(optTargetIdx).getQuota() - ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
         System.out.println( "checkQuotaBalance " +  ppdbOptions.get(iOpt).getName() + ":" +
                 ppdbOptions.get(iOpt).getQuotaBalance() +
@@ -40,6 +40,7 @@ public class CheckQuotaBalance {
                 );
 
                 //quotaBalance, jika kekurangan jadi negatif
+
                 int avalaibleQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size();
                 System.out.println("sisaQuotaTarget:" + avalaibleQuotaTarget + "=" + ppdbOptions.get(optTargetIdx).getQuota() + "-" + ppdbOptions.get(optTargetIdx).getPpdbRegistrationList().size());
                 int transferQuotaBasedOnNeed = 0;
@@ -49,26 +50,46 @@ public class CheckQuotaBalance {
                 if ( avalaibleQuotaTarget > Math.abs(ppdbOptions.get(iOpt).getQuotaBalance())){
                     sisaQuotaTarget = avalaibleQuotaTarget + ppdbOptions.get(iOpt).getQuotaBalance();
                     transferQuotaBasedOnNeed = avalaibleQuotaTarget - sisaQuotaTarget;
+                    processAddingQuota(ppdbOptions,iOpt, optTargetIdx, transferQuotaBasedOnNeed);
                 }else{
                     transferQuotaBasedOnNeed = avalaibleQuotaTarget;
+
+                    processAddingQuota(ppdbOptions,iOpt, optTargetIdx, transferQuotaBasedOnNeed);
+
+                    int sisaQuota2 = ppdbOptions.get(optTargetIdx2).getQuota() - ppdbOptions.get(optTargetIdx2).getPpdbRegistrationList().size();
+                    System.out.println( "checkQuotaBalance " +  ppdbOptions.get(iOpt).getName() + ":" +
+                            ppdbOptions.get(iOpt).getQuotaBalance() +
+                            " actQuota:" + ppdbOptions.get(iOpt).getQuota() +
+                            " && " + sisaQuota2
+                    );
+
+                    if ((ppdbOptions.get(iOpt).getQuotaBalance() < 0) && (sisaQuota2 > 0 ) ){
+                        System.out.println("optTarget studentList:" + ppdbOptions.get(optTargetIdx2).getPpdbRegistrationList().size() + " < q:" + ppdbOptions.get(optTargetIdx2).getQuota());
+                        if (ppdbOptions.get(optTargetIdx2).getPpdbRegistrationList().size() < ppdbOptions.get(optTargetIdx2).getQuota()) {
+                            System.out.println("set quota balance:" + ppdbOptions.get(iOpt).getName() +
+                                    " oriStudent:" + ppdbOptions.get(iOpt).getPpdbRegistrationList().size()
+                            );
+
+                            int avalaibleQuotaTarget2 = ppdbOptions.get(optTargetIdx2).getQuota() - ppdbOptions.get(optTargetIdx2).getPpdbRegistrationList().size();
+                            System.out.println("sisaQuotaTarget:" + avalaibleQuotaTarget2 + "=" + ppdbOptions.get(optTargetIdx2).getQuota() + "-" + ppdbOptions.get(optTargetIdx2).getPpdbRegistrationList().size());
+                            int transferQuotaBasedOnNeed2 = 0;
+                            int sisaQuotaTarget2 = 0;
+
+                            if ( avalaibleQuotaTarget2 > Math.abs(ppdbOptions.get(iOpt).getQuotaBalance())){
+                                sisaQuotaTarget2 = avalaibleQuotaTarget2 + ppdbOptions.get(iOpt).getQuotaBalance();
+                                transferQuotaBasedOnNeed2 = avalaibleQuotaTarget2 - sisaQuotaTarget2;
+                                processAddingQuota(ppdbOptions,iOpt, optTargetIdx2, transferQuotaBasedOnNeed2);
+                            }else {
+                                transferQuotaBasedOnNeed2 = avalaibleQuotaTarget2;
+                                processAddingQuota(ppdbOptions,iOpt, optTargetIdx2, transferQuotaBasedOnNeed2);
+                            }
+
+                        }
+                    }
+
                 }
-                System.out.println("ppdbOptions.get(iOpt).getQuota():" + ppdbOptions.get(iOpt).getQuota() + " + " + transferQuotaBasedOnNeed);
-                int totalQuotaOptionCur = ppdbOptions.get(iOpt).getQuota() + transferQuotaBasedOnNeed;
-                int totalQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - transferQuotaBasedOnNeed;
 
-                ppdbOptions.get(iOpt).setQuota(totalQuotaOptionCur);
-                ppdbOptions.get(optTargetIdx).setQuota(totalQuotaTarget);
 
-                ppdbOptions.get(iOpt).setQuotaBalance(ppdbOptions.get(iOpt).getQuotaBalance()+transferQuotaBasedOnNeed);
-
-                System.out.println("actOption:" + ppdbOptions.get(iOpt).getName() +
-                        " q:" + ppdbOptions.get(iOpt).getQuota() +
-                        " qBalance:" + ppdbOptions.get(iOpt).getQuotaBalance()
-                );
-                System.out.println("targetOption:" + ppdbOptions.get(optTargetIdx).getName() +
-                        " q:" + ppdbOptions.get(optTargetIdx).getQuota() +
-                        " qBalance:" + ppdbOptions.get(optTargetIdx).getQuotaBalance()
-                );
 
                 Collections.sort(ppdbOptions.get(iOpt).getPpdbRegistrationList(), new StudentGeneralSortingComparator());
 
@@ -86,8 +107,6 @@ public class CheckQuotaBalance {
                     int pullOptionIdx = -1;
                     int pullStudentIdx = -1;
 
-                    //ppdbView.displayOptionByIdx(ppdbOptions, iOpt);
-                    System.out.println("=========================================");
                     //cari siswa yg ada di history student, tapi tidak ada di registration
                     if (ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getAcceptedOptionId()!=ppdbOptions.get(iOpt).get_id()){
                         System.out.println(
@@ -126,39 +145,33 @@ public class CheckQuotaBalance {
                                 scoreDistanceFinal = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getScoreJarak1();
                                 acceptedOptionId = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getFirstChoice();
                                 acceptedOptionNo = 0;
-
                                 System.out.println("acceptedOption 0");
                             }else if (ppdbOptions.get(iOpt).get_id().equals(ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getSecondChoice())){
                                 System.out.println("acceptedOption 1");
-
                                 scoreDistanceFinal = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getScoreJarak2();
-
                                 acceptedOptionId = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getSecondChoice();
                                 acceptedOptionNo = 1;
                             }
-                            else if (ppdbOptions.get(iOpt).get_id().equals(ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getThirdChoice()) ){
+                            else if (ppdbOptions.get(iOpt).get_id().equals(ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getSecondChoice())){
                                 System.out.println("acceptedOption 2");
-
                                 scoreDistanceFinal = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getScoreJarak3();
                                 acceptedOptionId = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getThirdChoice();
-                                acceptedOptionNo = 2;
+                                acceptedOptionNo = 1;
                             }
                             else{
                                 System.out.println("acceptedOption 3");
                                 scoreDistanceFinal = ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getScoreJarak3();
+
                                 acceptedOptionId = ppdbOptions.get(ppdbOptions.size()-1).get_id();
-                                acceptedOptionNo = 3;
+                                acceptedOptionNo = 2;
                             }
-                            System.out.println(" idxOptionDestinationOption:" + iOpt + " destinationOptionId:" + ppdbOptions.get(iOpt).get_id() + " scoreDistanceFinal:" + scoreDistanceFinal);
+                            System.out.println(" idxOptionDestinationOption:" + iOpt + " destinationOptionId:" + ppdbOptions.get(iOpt).get_id());
 
                             System.out.println(" akanDiTarikKemana:" + acceptedOptionNo + " < FromSourceNo:" + ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getAcceptedOptionNo());
                             if (acceptedOptionNo < ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).getAcceptedOptionNo()) {
 
                                 //update student history pada sekolah sebelummya (Source Option)
-                                this.studentHistory.pullStudentHistory(ppdbOptions,
-                                        ppdbOptions.get(pullOptionIdx).getPpdbRegistrationList(),
-                                        pullStudentIdx, acceptedOptionId, acceptedOptionNo, scoreDistanceFinal,
-                                        pullOptionIdx, pullOptionIdx); //history siswa yang ketarik siswanya dirubah
+                                this.studentHistory.pullStudentHistory(ppdbOptions, ppdbOptions.get(pullOptionIdx).getPpdbRegistrationList(), pullStudentIdx, acceptedOptionId, acceptedOptionNo, scoreDistanceFinal, pullOptionIdx, pullOptionIdx); //history siswa yang ketarik siswanya dirubah
 
                                 //update student history pada active sekolah
                                 this.studentHistory.pullStudentHistory(ppdbOptions, ppdbOptions.get(pullOptionIdx).getPpdbRegistrationList(), pullStudentIdx, acceptedOptionId, acceptedOptionNo, scoreDistanceFinal, iOpt, pullOptionIdx); //history siswa disekolah yang menarik siswa dirubah
@@ -171,7 +184,7 @@ public class CheckQuotaBalance {
 
                                 int idxLastChoice = ppdbOptions.size() - 1;
                                 int idxStudentLastChoice = findData.findIdxFromRegistStudentsByStdIdandOptIdx(ppdbOptions, idxLastChoice, ppdbOptions.get(iOpt).getPpdbRegistrationHistories().get(iHistStd).get_id());
-                                if (idxStudentLastChoice != -1) {
+                                if (idxStudentLastChoice != -1){
                                     this.studentHistory.pullStudentHistory(ppdbOptions, ppdbOptions.get(pullOptionIdx).getPpdbRegistrationList(), pullStudentIdx, acceptedOptionId, acceptedOptionNo, scoreDistanceFinal, idxLastChoice, pullOptionIdx); //ubah history siswa pilihan terakhir
                                 }
 
@@ -198,6 +211,26 @@ public class CheckQuotaBalance {
             }
 
         }
+    }
+
+    private void processAddingQuota(List<PpdbOption> ppdbOptions, int iOpt, int optTargetIdx, int transferQuotaBasedOnNeed){
+        System.out.println("ppdbOptions.get(iOpt).getQuota():" + ppdbOptions.get(iOpt).getQuota() + " + " + transferQuotaBasedOnNeed);
+        int totalQuotaOptionCur = ppdbOptions.get(iOpt).getQuota() + transferQuotaBasedOnNeed;
+        int totalQuotaTarget = ppdbOptions.get(optTargetIdx).getQuota() - transferQuotaBasedOnNeed;
+
+        ppdbOptions.get(iOpt).setQuota(totalQuotaOptionCur);
+        ppdbOptions.get(optTargetIdx).setQuota(totalQuotaTarget);
+
+        ppdbOptions.get(iOpt).setQuotaBalance(ppdbOptions.get(iOpt).getQuotaBalance()+transferQuotaBasedOnNeed);
+
+        System.out.println("actOption:" + ppdbOptions.get(iOpt).getName() +
+                " q:" + ppdbOptions.get(iOpt).getQuota() +
+                " qBalance:" + ppdbOptions.get(iOpt).getQuotaBalance()
+        );
+        System.out.println("targetOption:" + ppdbOptions.get(optTargetIdx).getName() +
+                " q:" + ppdbOptions.get(optTargetIdx).getQuota() +
+                " qBalance:" + ppdbOptions.get(optTargetIdx).getQuotaBalance()
+        );
     }
 
 }

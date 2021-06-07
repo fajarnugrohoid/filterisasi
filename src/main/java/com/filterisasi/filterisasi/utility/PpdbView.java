@@ -6,13 +6,16 @@ import com.filterisasi.filterisasi.dto.PpdbRegistration;
 import com.filterisasi.filterisasi.model.PpdbHistory;
 import com.filterisasi.filterisasi.repository.PpdbFilteredRepository;
 import com.filterisasi.filterisasi.repository.PpdbOptionLookupSchoolRepository;
+import com.filterisasi.filterisasi.resource.RunnerSenior;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PpdbView {
 
-
+    private static final Logger logger = LoggerFactory.getLogger(PpdbView.class);
 
     public PpdbView() {
 
@@ -20,13 +23,27 @@ public class PpdbView {
 
     public void displayOption(List<PpdbOption> ppdbOptions){
         for (int iOpt = 0; iOpt <ppdbOptions.size() ; iOpt++) {
-            System.out.println("view-ppdbOption:" + iOpt + "-" + ppdbOptions.get(iOpt).get_id()  + " - " +
-                    ppdbOptions.get(iOpt).getName() +  " - " +
-                    ppdbOptions.get(iOpt).getPpdb_schools().get_Id() +
-                    " # P:" + ppdbOptions.get(iOpt).getPpdbRegistrationList().size() +
-                    " # Q:" + ppdbOptions.get(iOpt).getQuota()
-            );
-            this.displayStudent(ppdbOptions, iOpt);
+            if ( (ppdbOptions.get(iOpt).getType().equals("kondisi-tertentu") ) ||
+                  (ppdbOptions.get(iOpt).getType().equals("ketm") ) ||
+                  (iOpt == ppdbOptions.size()-1) ) {
+                logger.debug("view-ppdbOption: {} - {} - {} - {} #P:{} - #Q:{} - NeedFilter:{}",
+                        iOpt,
+                        ppdbOptions.get(iOpt).get_id(),
+                        ppdbOptions.get(iOpt).getName(),
+                        ppdbOptions.get(iOpt).getPpdb_schools().get_Id(),
+                        ppdbOptions.get(iOpt).getPpdbRegistrationList().size(),
+                        ppdbOptions.get(iOpt).getQuota(),
+                        ppdbOptions.get(iOpt).isNeedFilter()
+                );
+                System.out.println("view-ppdbOption:" + iOpt + "-" + ppdbOptions.get(iOpt).get_id() + " - " +
+                        ppdbOptions.get(iOpt).getName() + " - " +
+                        ppdbOptions.get(iOpt).getPpdb_schools().get_Id() +
+                        " # P:" + ppdbOptions.get(iOpt).getPpdbRegistrationList().size() +
+                        " # Q:" + ppdbOptions.get(iOpt).getQuota() +
+                        " # NeedFilter:" + ppdbOptions.get(iOpt).isNeedFilter()
+                );
+                this.displayStudent(ppdbOptions, iOpt);
+            }
         }
     }
 
@@ -38,9 +55,10 @@ public class PpdbView {
                 System.out.println("ppdbRegistrations:" + std + "-" + ppdbRegistrations.get(std).get_id() + " - " +
                         ppdbRegistrations.get(std).getName() + " - " +
                         ppdbRegistrations.get(std).getSkorPeserta() + " - " +
-                        ppdbRegistrations.get(std).getSkorJarak1() + " - " +
-                        ppdbRegistrations.get(std).getAcceptedOptionNo() + " " +
-                        ppdbRegistrations.get(std).getCaraPendaftaran() + " " +
+                        " fdis:" + ppdbRegistrations.get(std).getScoreDistanceFinal() + " - " +
+                        ppdbRegistrations.get(std).getBirthDate() + " - " +
+                        " accNo:" + ppdbRegistrations.get(std).getAcceptedOptionNo() + " " +
+                        ppdbRegistrations.get(std).getJenjangPendaftaran() + " " +
                         ppdbRegistrations.get(std).getLevelPendaftaran() + " "
                 );
             }

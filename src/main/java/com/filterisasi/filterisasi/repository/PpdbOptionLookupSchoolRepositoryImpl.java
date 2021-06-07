@@ -164,7 +164,6 @@ public class PpdbOptionLookupSchoolRepositoryImpl implements PpdbOptionLookupSch
         for (PpdbOption ppdbOption : ppdbOptions) {
             Update update = new Update();
             update.set("quota", ppdbOption.getQuota());
-            update.set("old_quota", ppdbOption.getOldQuota());
             ops.updateOne(Query.query(where("_id").is(ppdbOption.get_id())), update);
         }
         BulkWriteResult x = ops.execute();

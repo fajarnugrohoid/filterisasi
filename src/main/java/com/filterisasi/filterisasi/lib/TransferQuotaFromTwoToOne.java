@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TransferQuota {
+public class TransferQuotaFromTwoToOne {
 
     private FindData findData;
-    public TransferQuota(FindData findData) {
+    public TransferQuotaFromTwoToOne(FindData findData) {
         this.findData = findData;
     }
 
@@ -58,7 +58,7 @@ public class TransferQuota {
             int quotaOption = ppdbOptions.get(iOpt).getQuota();
             System.out.println(iOpt + ppdbOptions.get(iOpt).getName() + " jumlahPendaftar:" + jumlahPendaftar + " > " + quotaOption);
             List<PpdbRegistration> students = ppdbOptions.get(iOpt).getPpdbRegistrationList();
-            Collections.sort(students, new StudentComparator());
+            Collections.sort(students, new StudentGeneralSortingComparator());
 
             if (jumlahPendaftar > quotaOption) { //butuh quota, cek ke nhun
                 int optTargetIdx = this.findData.findOptionIdxByMajorIdandSchoolId(ppdbOptions.get(iOpt).getMajorId(), ppdbOptions.get(iOpt).getSchoolId(), targetJalurs.get(iJalur) , ppdbOptions);
@@ -84,17 +84,16 @@ public class TransferQuota {
     }
 
 
-    public void checkIfAnyRemainingQuota(List<PpdbOption> ppdbOptions, String jalur1, String jalur2){
+    public void checkIfAnyRemainingQuota(List<PpdbOption> ppdbOptions, String jalur1, String jalur2, String targetJalur){
         for (int iOpt = 0; iOpt <ppdbOptions.size() ; iOpt++) {
             if (iOpt==ppdbOptions.size()-1) continue; //jika sekolah buangan lewat
 
             if ((ppdbOptions.get(iOpt).getType().equalsIgnoreCase(jalur1)) || (ppdbOptions.get(iOpt).getType().equalsIgnoreCase(jalur2))) {
 
-                transferQuota(ppdbOptions, iOpt, "nhun");
+                transferQuota(ppdbOptions, iOpt, targetJalur);
 
             }
         }
-
     }
 
     public void transferQuota(List<PpdbOption> ppdbOptions, int iOpt, String targetJalur){
@@ -113,7 +112,8 @@ public class TransferQuota {
             ppdbOptions.get(iOpt).setQuota(sisaQuotaCurOption);
             ppdbOptions.get(optTargetIdx).setQuota(totalQuotaTarget);
         }
-
     }
+
+
 
 }

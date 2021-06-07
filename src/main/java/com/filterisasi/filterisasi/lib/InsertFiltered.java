@@ -31,7 +31,7 @@ public class InsertFiltered {
                 System.out.println("ppdbRegistrations:" + stdIdx + "-" + ppdbRegistrations.get(stdIdx).get_id() + " - " +
                         ppdbRegistrations.get(stdIdx).getName() + " - " +
                         ppdbRegistrations.get(stdIdx).getSkorPeserta() + " - " +
-                        ppdbRegistrations.get(stdIdx).getSkorJarak1() + " - " + ppdbRegistrations.get(stdIdx).getAcceptedOptionNo());
+                        ppdbRegistrations.get(stdIdx).getScoreJarak1() + " - " + ppdbRegistrations.get(stdIdx).getAcceptedOptionNo());
 
                 PpdbFiltered ppdbFiltered = new PpdbFiltered();
                 ppdbFiltered.setOptionId(ppdbRegistrations.get(stdIdx).getAcceptedOptionId());
@@ -42,8 +42,11 @@ public class InsertFiltered {
                 ppdbFiltereds.add(ppdbFiltered);
 
             }
+
             ppdbOptionLookupSchoolRepository.updateQuotaPpdbOption(ppdbOptions);
+            ppdbRegistrationRepository.updateAcceptedStudent(ppdbOptions, optionIdx);
             ppdbFilteredRepository.insertStudents(ppdbFiltereds);
+
 
         }
     }

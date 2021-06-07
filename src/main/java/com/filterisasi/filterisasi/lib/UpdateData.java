@@ -40,10 +40,16 @@ public class UpdateData {
         historyTarget.setAcceptedOptionNo(acceptedOptionNo);
         historyTarget.setFirstChoice(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getFirstChoice());
         historyTarget.setSecondChoice(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSecondChoice());
+        historyTarget.setThirdChoice(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getThirdChoice());
         historyTarget.set_id(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).get_id());
         historyTarget.setName(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getName());
         historyTarget.setSkorPeserta(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSkorPeserta());
-        historyTarget.setSkorJarak1(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSkorJarak1());
+        historyTarget.setScoreJarak1(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreJarak1());
+        historyTarget.setScoreJarak2(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreJarak2());
+        historyTarget.setScoreJarak3(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreJarak3());
+        historyTarget.setScoreDistanceFinal(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreDistanceFinal());
+        historyTarget.setScoreAge(ppdbOptions.get(idxOptionFirstChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreAge());
+
         return historyTarget;
     }
 
@@ -57,10 +63,16 @@ public class UpdateData {
         historyTarget.setAcceptedOptionNo(acceptedOptionNo);
         historyTarget.setFirstChoice(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getFirstChoice());
         historyTarget.setSecondChoice(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSecondChoice());
+        historyTarget.setThirdChoice(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getThirdChoice());
         historyTarget.set_id(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).get_id());
         historyTarget.setName(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getName());
         historyTarget.setSkorPeserta(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSkorPeserta());
-        historyTarget.setSkorJarak1(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getSkorJarak1());
+        historyTarget.setScoreJarak1(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreJarak1());
+        historyTarget.setScoreJarak2(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreJarak2());
+        historyTarget.setScoreJarak3(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreJarak3());
+        historyTarget.setScoreDistanceFinal(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreDistanceFinal());
+        historyTarget.setScoreAge(ppdbOptions.get(idxOptionTargetChoice).getPpdbRegistrationHistories().get(idxCurStudent).getScoreAge());
+
         return historyTarget;
     }
 

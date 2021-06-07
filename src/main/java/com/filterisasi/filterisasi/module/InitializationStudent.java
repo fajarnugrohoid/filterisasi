@@ -89,18 +89,29 @@ public class InitializationStudent {
 
             ppdbRegistration.setJenjangPendaftaran(ppdbRegistrations.get(std).getJenjangPendaftaran());
             ppdbRegistration.setLevelPendaftaran(ppdbRegistrations.get(std).getLevelPendaftaran());
+            ppdbRegistration.setCaraPendaftaran(ppdbRegistrations.get(std).getCaraPendaftaran());
 
             ppdbRegistration.setFirstChoice(ppdbRegistrations.get(std).getFirstChoice());
             ppdbRegistration.setSecondChoice(ppdbRegistrations.get(std).getSecondChoice());
             ppdbRegistration.setThirdChoice(ppdbRegistrations.get(std).getThirdChoice());
 
             ppdbRegistration.setSkorPeserta(ppdbRegistrations.get(std).getSkorPeserta());
-            ppdbRegistration.setSkorJarak1(ppdbRegistrations.get(std).getSkorJarak1());
+
+            ppdbRegistration.setScoreJarak1(ppdbRegistrations.get(std).getScoreJarak1());
+            ppdbRegistration.setScoreJarak2(ppdbRegistrations.get(std).getScoreJarak2());
+            ppdbRegistration.setScoreJarak3(ppdbRegistrations.get(std).getScoreJarak3());
+            ppdbRegistration.setScoreDistanceFinal(ppdbRegistrations.get(std).getScoreJarak1());
+
+
+            ppdbRegistration.setBirthDate(ppdbRegistrations.get(std).getBirthDate());
+            ppdbRegistration.setScoreAge(ppdbRegistrations.get(std).getScoreAge());
+
+
             ppdbRegistration.setPriority(ppdbRegistrations.get(std).getPriority());
 
             ppdbRegistration.setAcceptedOptionNo(0); //diterima dipilihan 1
             ppdbRegistration.setAcceptedOptionId(ppdbOptions.get(optionIdx).get_id());
-            ppdbRegistration.setStudentExist(true);
+
             ppdbRegistrationList.add(ppdbRegistration);
         }
         return ppdbRegistrationList;
@@ -123,7 +134,14 @@ public class InitializationStudent {
             ppdbRegistrationHistory.setThirdChoice(ppdbRegistrations.get(std).getThirdChoice());
 
             ppdbRegistrationHistory.setSkorPeserta(ppdbRegistrations.get(std).getSkorPeserta());
-            ppdbRegistrationHistory.setSkorJarak1(ppdbRegistrations.get(std).getSkorJarak1());
+
+            ppdbRegistrationHistory.setScoreJarak1(ppdbRegistrations.get(std).getScoreJarak1());
+            ppdbRegistrationHistory.setScoreJarak2(ppdbRegistrations.get(std).getScoreJarak2());
+            ppdbRegistrationHistory.setScoreJarak3(ppdbRegistrations.get(std).getScoreJarak3());
+            ppdbRegistrationHistory.setScoreDistanceFinal(ppdbRegistrations.get(std).getScoreJarak1());
+
+            ppdbRegistrationHistory.setScoreAge(ppdbRegistrations.get(std).getScoreAge());
+
             ppdbRegistrationHistory.setPriority(ppdbRegistrations.get(std).getPriority());
 
             ppdbRegistrationHistory.setAcceptedOptionNo(0); //diterima dipilihan 1

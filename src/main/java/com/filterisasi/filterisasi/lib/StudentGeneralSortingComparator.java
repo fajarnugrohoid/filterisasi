@@ -12,12 +12,14 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
   *
   */
 
-public class StudentComparator implements Comparator<PpdbRegistration> {
+public class StudentGeneralSortingComparator implements Comparator<PpdbRegistration> {
 
     @Override
     public int compare(PpdbRegistration o1, PpdbRegistration o2) {
         return new CompareToBuilder()
                 .append(o2.getSkorPeserta(), o1.getSkorPeserta())
-                .append(o1.getSkorJarak1(), o2.getSkorJarak1()).toComparison();
+                .append(o1.getScoreDistanceFinal(), o2.getScoreDistanceFinal())
+                .append(o1.getScoreAge(), o2.getScoreAge()).toComparison();
     }
+
 }

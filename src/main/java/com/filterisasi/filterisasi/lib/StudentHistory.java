@@ -27,7 +27,9 @@ public class StudentHistory {
         historyTarget.set_id(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).get_id());
         historyTarget.setName(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getName());
         historyTarget.setSkorPeserta(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getSkorPeserta());
-        historyTarget.setSkorJarak1(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getSkorJarak1());
+        historyTarget.setScoreJarak1(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getScoreJarak1());
+        historyTarget.setScoreJarak2(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getScoreJarak2());
+        historyTarget.setScoreJarak3(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getScoreJarak3());
 
         PpdbHistory updateHistoryOtherTarget2 = new PpdbHistory();
         updateHistoryOtherTarget2.setStudentExist(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).isStudentExist());
@@ -38,7 +40,9 @@ public class StudentHistory {
         updateHistoryOtherTarget2.set_id(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).get_id());
         updateHistoryOtherTarget2.setName(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getName());
         updateHistoryOtherTarget2.setSkorPeserta(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getSkorPeserta());
-        updateHistoryOtherTarget2.setSkorJarak1(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getSkorJarak1());
+        updateHistoryOtherTarget2.setScoreJarak1(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getScoreJarak1());
+        updateHistoryOtherTarget2.setScoreJarak2(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getScoreJarak2());
+        updateHistoryOtherTarget2.setScoreJarak3(ppdbOptions.get(idxTargetOption).getPpdbRegistrationHistories().get(idxStudentTargetHistory).getScoreJarak3());
 
 
         addOrUpdateHistoryStudent2(ppdbOptions, idxTargetOption, idxStudentTargetHistory, historyTarget);
@@ -93,10 +97,13 @@ public class StudentHistory {
         historyTarget.setAcceptedOptionNo(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getAcceptedOptionNo());
         historyTarget.setFirstChoice(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getFirstChoice());
         historyTarget.setSecondChoice(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getSecondChoice());
+        historyTarget.setThirdChoice(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getThirdChoice());
         historyTarget.set_id(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).get_id());
         historyTarget.setName(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getName());
         historyTarget.setSkorPeserta(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getSkorPeserta());
-        historyTarget.setSkorJarak1(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getSkorJarak1());
+        historyTarget.setScoreJarak1(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getScoreJarak1());
+        historyTarget.setScoreJarak2(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getScoreJarak2());
+        historyTarget.setScoreJarak3(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getScoreJarak3());
         historyTarget.setStudentExist(true);
 
         PpdbHistory updateHistoryOtherTarget = new PpdbHistory();
@@ -105,10 +112,14 @@ public class StudentHistory {
         updateHistoryOtherTarget.setAcceptedOptionNo(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getAcceptedOptionNo());
         updateHistoryOtherTarget.setFirstChoice(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getFirstChoice());
         updateHistoryOtherTarget.setSecondChoice(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getSecondChoice());
+        updateHistoryOtherTarget.setThirdChoice(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getThirdChoice());
+
         updateHistoryOtherTarget.set_id(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).get_id());
         updateHistoryOtherTarget.setName(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getName());
         updateHistoryOtherTarget.setSkorPeserta(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getSkorPeserta());
-        updateHistoryOtherTarget.setSkorJarak1(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getSkorJarak1());
+        updateHistoryOtherTarget.setScoreJarak1(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getScoreJarak1());
+        updateHistoryOtherTarget.setScoreJarak2(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getScoreJarak2());
+        updateHistoryOtherTarget.setScoreJarak3(ppdbOptions.get(actOption).getPpdbRegistrationHistories().get(actStudent).getScoreJarak3());
         updateHistoryOtherTarget.setStudentExist(false);
 
         addOrUpdateHistoryStudent1(ppdbOptions, idxTargetOption, actOption, actStudent, historyTarget);
@@ -217,18 +228,24 @@ public class StudentHistory {
 
     public PpdbHistory setStudentHistory(
                                      ObjectId studentId, String studentName, double skorPeserta,
-                                     double skorJarak1,
-                                     ObjectId firstChoice, ObjectId secondChoice,
+                                     double scoreJarak1, double scoreJarak2, double scoreJarak3,
+                                     double scoreDistanceFinal, double scoreAge,
+                                     ObjectId firstChoice, ObjectId secondChoice, ObjectId thirdChoice,
                                      ObjectId acceptedId, int acceptedNo){
         historyTarget = new PpdbHistory();
         historyTarget.setAcceptedOptionId(acceptedId);
         historyTarget.setAcceptedOptionNo(acceptedNo);
         historyTarget.setFirstChoice(firstChoice);
         historyTarget.setSecondChoice(secondChoice);
+        historyTarget.setThirdChoice(thirdChoice);
         historyTarget.set_id(studentId);
         historyTarget.setName(studentName);
         historyTarget.setSkorPeserta(skorPeserta);
-        historyTarget.setSkorJarak1(skorJarak1);
+        historyTarget.setScoreJarak1(scoreJarak1);
+        historyTarget.setScoreJarak2(scoreJarak2);
+        historyTarget.setScoreJarak3(scoreJarak3);
+        historyTarget.setScoreDistanceFinal(scoreDistanceFinal);
+        historyTarget.setScoreAge(scoreAge);
         historyTarget.setStudentExist(true);
         return historyTarget;
     }
@@ -245,9 +262,14 @@ public class StudentHistory {
                     students.get(iStd).get_id(),
                     students.get(iStd).getName(),
                     students.get(iStd).getSkorPeserta(),
-                    students.get(iStd).getSkorJarak1(),
+                    students.get(iStd).getScoreJarak1(),
+                    students.get(iStd).getScoreJarak2(),
+                    students.get(iStd).getScoreJarak3(),
+                    students.get(iStd).getScoreDistanceFinal(),
+                    students.get(iStd).getScoreAge(),
                     students.get(iStd).getFirstChoice(),
                     students.get(iStd).getSecondChoice(),
+                    students.get(iStd).getThirdChoice(),
                     acceptedOptionId,
                     acceptedOptionNo
             );
@@ -262,18 +284,25 @@ public class StudentHistory {
     }
 
     public void pullStudentHistory(List<PpdbOption> ppdbOptions,List<PpdbRegistration> students, int iStd,
-                                     ObjectId acceptedOptionId, int acceptedOptionNo, int idxTargetOption, int idxOptionTarik
+                                     ObjectId acceptedOptionId, int acceptedOptionNo, double scoreDistanceFinal,
+                                   int idxTargetOption, int idxOptionTarik
     ){
 
         int idxStudentHistoryTargetOption = findIdxStudentHistoryByStdIdAndOptId(ppdbOptions, idxTargetOption, ppdbOptions.get(idxOptionTarik).getPpdbRegistrationList().get(iStd).get_id());
         if (idxStudentHistoryTargetOption==-1){
+
             PpdbHistory ppdbHistory = setStudentHistory(
                     students.get(iStd).get_id(),
                     students.get(iStd).getName(),
                     students.get(iStd).getSkorPeserta(),
-                    students.get(iStd).getSkorJarak1(),
+                    students.get(iStd).getScoreJarak1(),
+                    students.get(iStd).getScoreJarak2(),
+                    students.get(iStd).getScoreJarak3(),
+                    students.get(iStd).getScoreDistanceFinal(),
+                    students.get(iStd).getScoreAge(),
                     students.get(iStd).getFirstChoice(),
                     students.get(iStd).getSecondChoice(),
+                    students.get(iStd).getThirdChoice(),
                     acceptedOptionId,
                     acceptedOptionNo
             );
